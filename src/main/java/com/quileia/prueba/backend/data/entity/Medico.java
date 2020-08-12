@@ -19,7 +19,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -74,7 +73,4 @@ public class Medico implements Serializable {
         }
         return citas.add(cita);
     }
-    
-    @Transient
-    private Integer horasAsignadas = 0;
 }

@@ -5,8 +5,8 @@
  */
 package com.quileia.prueba.backend.web.controller;
 
-import com.quileia.prueba.backend.service.MedicoService;
-import com.quileia.prueba.backend.web.dto.MedicoDTO;
+import com.quileia.prueba.backend.service.PacienteService;
+import com.quileia.prueba.backend.web.dto.PacienteDTO;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,25 +26,25 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @CrossOrigin
-@RequestMapping("medicos")
-public class MedicoController {
+@RequestMapping("pacientes")
+public class PacienteController {
     
-    private final MedicoService medicoService;
+    private final PacienteService pacienteService;
     
-    public MedicoController(MedicoService medicoService) {
-        this.medicoService = medicoService;
+    public PacienteController(PacienteService pacienteService) {
+        this.pacienteService = pacienteService;
     }
     
     @GetMapping()
-    public ResponseEntity<?> getMedicos(){
-        List<MedicoDTO> resp = medicoService.getMedicos();
+    public ResponseEntity<?> getPacientes(){
+        List<PacienteDTO> resp = pacienteService.getPacientes();
         return ResponseEntity.status(HttpStatus.OK).body(resp);
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<?> getMedico(@PathVariable("id") String id){
+    public ResponseEntity<?> getPaciente(@PathVariable("id") String id){
         try{
-            MedicoDTO resp = medicoService.getMedico(id);
+            PacienteDTO resp = pacienteService.getPaciente(id);
             return ResponseEntity.status(HttpStatus.OK).body(resp);
         }
         catch (Exception e){
@@ -53,9 +53,9 @@ public class MedicoController {
     }
     
     @PostMapping()
-    public ResponseEntity<?> addMedico(@RequestBody MedicoDTO medicoDTO){
+    public ResponseEntity<?> addPaciente(@RequestBody PacienteDTO pacienteDTO){
         try{
-            MedicoDTO resp = medicoService.addMedico(medicoDTO);
+            PacienteDTO resp = pacienteService.addPaciente(pacienteDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(resp);
         }
         catch (Exception e) {
@@ -64,9 +64,9 @@ public class MedicoController {
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateMedico(@PathVariable("id") String id, @RequestBody MedicoDTO medicoDTO){
+    public ResponseEntity<?> updatePaciente(@PathVariable("id") String id, @RequestBody PacienteDTO pacienteDTO){
         try{
-            MedicoDTO resp = medicoService.updateMedico(id, medicoDTO);
+            PacienteDTO resp = pacienteService.updatePaciente(id, pacienteDTO);
             return ResponseEntity.status(HttpStatus.OK).body(resp);
         }
         catch (Exception e){
@@ -75,9 +75,9 @@ public class MedicoController {
     }
     
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteMedico(@PathVariable("id") String id){
+    public ResponseEntity<?> deletePaciente(@PathVariable("id") String id){
         try{
-            MedicoDTO resp = medicoService.deleteMedico(id);
+            PacienteDTO resp = pacienteService.deletePaciente(id);
             return ResponseEntity.status(HttpStatus.OK).body(resp);
         }
         catch (Exception e){

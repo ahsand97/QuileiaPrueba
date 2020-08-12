@@ -14,7 +14,7 @@ INSERT INTO "medicos"("nombre", "identificacion", "tipoIdentificacion", "numeroT
 ('Pepito López', '222222222', 'Cédula de Ciudadanía', '369', 1, 'Pediatra', '10 A.M', '10 P.M');
 
 INSERT INTO "pacientes"("nombre", "identificacion", "tipoIdentificacion", "fechaNacimiento", "EPS") VALUES
-('Luis David Pérez Bermúdez', '123456789', 'Cédula de Ciudadanía', '1997-06-05', 'Comfamiliar S.A'),
+('Ahsan David Pérez Bermúdez', '123456789', 'Cédula de Ciudadanía', '1997-06-05', 'Comfamiliar S.A'),
 ('Carlos Andrés Baena', '22222222', 'Cédula de Ciudadanía', '1970-06-21', 'CafeSalud'),
 ('Pedro Arturo Ahmed', '33333333', 'Cédula de Ciudadanía', '1995-05-20', 'Sura'),
 ('Laura Andrea Perea', '111111111', 'Cédula de Ciudadanía', '1980-01-20', 'Aliansalud EPS');

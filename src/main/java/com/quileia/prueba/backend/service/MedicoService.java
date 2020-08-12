@@ -31,7 +31,7 @@ public class MedicoService {
     @Autowired
     private final MedicoMapper medicoMapper;
     
-    public Boolean medicoHasNullOrBlankOrEmptyFields(MedicoDTO medicoDTO){
+    public Boolean medicoDTOHasNullOrBlankOrEmptyFields(MedicoDTO medicoDTO){
         String nombre = medicoDTO.getNombre();
         String identificacion = medicoDTO.getIdentificacion();
         String tipoIdentificacion = medicoDTO.getTipoIdentificacion();
@@ -82,18 +82,18 @@ public class MedicoService {
     }
     
     public MedicoDTO getMedico(String id) throws Exception {
-        Medico medico = medicoRepository.findById(Long.valueOf(id)).get();
-        if(medico == null){
+        Optional<Medico> medico = medicoRepository.findById(Long.valueOf(id));
+        if(medico.isEmpty()){
             throw new Exception("Médico no encontrado en el sistema.");
         }
         else{
-            MedicoDTO resp = medicoMapper.fromMedico(medico);
+            MedicoDTO resp = medicoMapper.fromMedico(medico.get());
             return resp;
         }
     }
     
     public MedicoDTO addMedico(MedicoDTO medicoDTO) throws Exception {
-        if(medicoHasNullOrBlankOrEmptyFields(medicoDTO) == true){
+        if(medicoDTOHasNullOrBlankOrEmptyFields(medicoDTO) == true){
             throw new Exception("Faltan datos!");
         }
         else{
@@ -112,12 +112,12 @@ public class MedicoService {
         }
     }
     
-    public MedicoDTO updateMedico(MedicoDTO medicoDTO) throws Exception {
-        if(medicoHasNullOrBlankOrEmptyFields(medicoDTO) == true){
+    public MedicoDTO updateMedico(String id, MedicoDTO medicoDTO) throws Exception {
+        if(medicoDTOHasNullOrBlankOrEmptyFields(medicoDTO) == true){
             throw new Exception("Faltan datos!");
         }
         else{
-            Optional<Medico> medicoFromDB = medicoRepository.findById(medicoDTO.getId());
+            Optional<Medico> medicoFromDB = medicoRepository.findById(Long.valueOf(id));
             if(medicoFromDB.isEmpty()){
                 throw new Exception("Médico no encontrado en el sistema.");
             }
