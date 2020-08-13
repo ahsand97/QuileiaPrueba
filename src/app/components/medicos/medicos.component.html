@@ -1,0 +1,17 @@
+<div>
+    <h1 class="centro">Médicos</h1>
+    <h1 *ngIf="medicos.length > 0">
+        <ng-container *ngFor="let medico of medicos">
+            <h1>asno</h1>
+        </ng-container>
+    </h1>
+    <div class="centered">
+        <div style="font-weight: bold;">Añadir Médico</div>
+        <button mat-icon-button>
+            <img src="../../../assets/add.svg" style="width: 42px; height: 42px;">
+        </button>
+        <br>
+        <br>
+        <button mat-raised-button id="salirBoton" type="button" (click)="cerrarDialogMedicos()">Salir</button>
+    </div>
+</div>

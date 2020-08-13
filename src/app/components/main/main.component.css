@@ -1,0 +1,44 @@
+body{
+    background: rgb(2,0,36);
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+}
+
+#divPrincipal{
+    text-align: center;
+    padding-top: 200px;
+    padding-bottom: 40px;
+}
+
+.titulo{
+    font-weight: bold;
+    font-size: 60px;
+    color: white;
+}
+
+.centered{
+    text-align: center;
+}
+
+.img{
+    width: 200px;
+    height: 200px;
+    border-radius: 20px;
+    padding-bottom: 5px;
+}
+
+.inline{
+    display: inline-block;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.boton{
+    font-size: 18px;
+    color: white;
+    background-color: green;
+}
+
+.boton:hover{
+    color: green;
+    background-color: white;
+}
