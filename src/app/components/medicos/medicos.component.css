@@ -18,3 +18,120 @@ h1.centro{
     background-color: white;
     color: crimson;
 }
+
+.mat-header-cell {
+    flex-direction: column;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.mat-cell {
+    text-align: center;
+    justify-content: center;
+}
+
+.opcionbutton{
+    margin-left: 2.5px;
+    margin-right: 2.5px;
+    font-size: 12px;
+    text-align: center;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.detallebutton{
+    background-color: teal;
+    color: white;
+}
+
+.detallebutton:hover{
+    background-color: white;
+    color: teal;
+}
+
+.borrarbutton{
+    background-color: crimson;
+    color: white;
+}
+
+.borrarbutton:hover{
+    background-color: white;
+    color: crimson;
+}
+
+.editarbutton{
+    background-color: darkgreen;
+    color: white;
+}
+
+.editarbutton:hover{
+    background-color: white;
+    color: darkgreen
+}
+
+.fullWidth{
+    display: block;
+    margin: 0 auto;
+    width: 70%;
+}
+
+.titleInput{
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.inputAdd{
+    font-size: 15px;
+    height: 30px;
+}
+
+.titleInputHora{
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.RadiobotonesHora{
+    justify-content: center;
+    display: flex!important;
+    flex-direction: row;
+}
+
+#guardarMedico:enabled{
+    margin-right: 10px;
+    background-color: limegreen;
+    color: white;
+}
+
+#guardarMedico:enabled:hover{
+    margin-right: 10px;
+    background-color: white;
+    color: limegreen;
+}
+
+#guardarMedico:disabled{
+    margin-right: 10px;
+    background-color: gray;
+    color: white;
+}
+
+#cancelarMedico{
+    margin-left: 10px;
+    background-color: crimson;
+    color: white;
+}
+
+#cancelarMedico:enabled:hover{
+    margin-left: 10px;
+    background-color: white;
+    color: crimson;
+}
+
+.errorServidor{
+    text-align: center;
+    font-size: 18px;
+    color: #ff4747;
+    font-weight: bold;
+    
+  }

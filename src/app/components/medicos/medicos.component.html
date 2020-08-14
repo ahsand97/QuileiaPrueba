@@ -1,17 +1,177 @@
 <div>
     <h1 class="centro">Médicos</h1>
-    <h1 *ngIf="medicos.length > 0">
-        <ng-container *ngFor="let medico of medicos">
-            <h1>asno</h1>
+    <mat-table *ngIf="medicos.length > 0" [dataSource]="dataSource" class="mat-elevation-z8">
+        <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef> id </mat-header-cell>
+            <mat-cell *matCellDef="let medico"> {{medico.id}} </mat-cell>
         </ng-container>
-    </h1>
+
+        <ng-container matColumnDef="Nombre">
+            <mat-header-cell *matHeaderCellDef> Nombre </mat-header-cell>
+            <mat-cell *matCellDef="let medico"> {{medico.nombre}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="Tipo Identificación">
+            <mat-header-cell *matHeaderCellDef> Tipo Identificación </mat-header-cell>
+            <mat-cell *matCellDef="let medico"> {{medico.tipoIdentificacion}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="Identificación">
+            <mat-header-cell *matHeaderCellDef> Identificación </mat-header-cell>
+            <mat-cell *matCellDef="let medico"> {{medico.identificacion}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="Opciones">
+            <mat-header-cell *matHeaderCellDef> Opciones </mat-header-cell>
+            <mat-cell *matCellDef="let medico; let i = index">
+                <div>
+                    <button mat-raised-button class="opcionbutton detallebutton" (click)="getDetallesMedico(templateDetalles, medico.id)">Detalles</button>
+                    <button mat-raised-button class="opcionbutton editarbutton" (click)="updateMedico(medico.id)">Editar</button>
+                    <button mat-raised-button class="opcionbutton borrarbutton" (click)="borrarMedico(medico.id, i)">Borrar</button>
+                </div>
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <br>
+    <br>
+
+    <ng-template #templateDetalles let-data>
+        <h1 class="centro">Información Médico</h1>
+        <div class="fullWidth">
+            <h3 style="display: inline-block; font-weight: bold;">Id:&nbsp;</h3>
+            <h3 style="display: inline-block;">{{data.medico.id}}</h3>
+            <br>
+            <h3 style="display: inline-block; font-weight: bold;">Nombre:&nbsp;</h3>
+            <h3 style="display: inline-block;">{{data.medico.nombre}}</h3>
+            <br>
+            <h3 style="display: inline-block; font-weight: bold;">Tipo Identificación:&nbsp;</h3>
+            <h3 style="display: inline-block;">{{data.medico.tipoIdentificacion}}</h3>
+            <br>
+            <h3 style="display: inline-block; font-weight: bold;">Identificación:&nbsp;</h3>
+            <h3 style="display: inline-block;">{{data.medico.identificacion}}</h3>
+            <br>
+            <h3 style="display: inline-block; font-weight: bold;">Número Tarjeta Profesional:&nbsp;</h3>
+            <h3 style="display: inline-block;">{{data.medico.numeroTarjetaProfesional}}</h3>
+            <br>
+            <h3 style="display: inline-block; font-weight: bold;">Años de experiencia:&nbsp;</h3>
+            <h3 style="display: inline-block;">{{data.medico.anosExperiencia}}</h3>
+            <br>
+            <h3 style="display: inline-block; font-weight: bold;">Especialidad:&nbsp;</h3>
+            <h3 style="display: inline-block;">{{data.medico.especialidad}}</h3>
+            <br>
+            <h3 style="display: inline-block; font-weight: bold;">Hora inicio atención:&nbsp;</h3>
+            <h3 style="display: inline-block;">{{data.medico.horaInicioAtencion}}</h3>
+            <br>
+            <h3 style="display: inline-block; font-weight: bold;">Hora fin atención:&nbsp;</h3>
+            <h3 style="display: inline-block;">{{data.medico.horaFinAtencion}}</h3>
+            <br>
+        </div>
+        <div class="fullWidth centered">
+            <button mat-raised-button id="salirBoton" type="button" (click)="cerrarDetallesMedico()">Atrás</button>
+        </div>
+    </ng-template>
+
+    <ng-template #templateCrear>
+        <h1 class="centro">Añadir Médico</h1>
+        <form [formGroup]="addMedicoForm" #formDirectiveAddMedico="ngForm" (ngSubmit)="submitCrearMedico(formDirectiveAddMedico)" autocomplete="off">
+            <mat-form-field class="fullWidth">
+                <mat-label for="nombre" class="text-info titleInput">Nombre:</mat-label><br>
+                <input class="inputAdd" matInput type="text" formControlName="nombre" (click)="hideError('crear')" (focus)="hideError('crear')">
+                <mat-error *ngIf="(nombre.dirty || nombre.touched) && nombre.invalid && nombre.errors.required">Escribe el nombre del médico</mat-error>
+                <mat-error *ngIf="(nombre.dirty || nombre.touched) && nombre.invalid && nombre.errors.maxlength">Se ha excedido el límite de caracteres</mat-error>
+            </mat-form-field>
+            <br>
+            <mat-form-field class="fullWidth">
+                <mat-label for="tipoIdentificacion" class="text-info titleInput">Tipo de Identificación:</mat-label><br>
+                <mat-select formControlName="tipoIdentificacion" (click)="hideError('crear')" (focus)="hideError('crear')">
+                    <ng-container *ngFor="let tipoIdentidad of tipoIdentidades">
+                        <mat-option [value]="tipoIdentidad">{{tipoIdentidad}}</mat-option>
+                    </ng-container>
+                </mat-select>
+                <mat-error *ngIf="(tipoIdentificacion.dirty || tipoIdentificacion.touched) && tipoIdentificacion.invalid && tipoIdentificacion.errors.required">Selecciona el tipo de identificación</mat-error>
+            </mat-form-field>
+            <br>
+            <mat-form-field class="fullWidth">
+                <mat-label for="identificacion" class="text-info titleInput">Identificación:</mat-label><br>
+                <input class="inputAdd" matInput type="text" formControlName="identificacion" (click)="hideError('crear')" (focus)="hideError('crear')">
+                <mat-error *ngIf="(identificacion.dirty || identificacion.touched) && identificacion.invalid && identificacion.errors.required">Escribe la identificacion</mat-error>
+                <mat-error *ngIf="(identificacion.dirty || identificacion.touched) && identificacion.invalid && identificacion.errors.maxlength">Se ha excedido el límite de caracteres</mat-error>
+            </mat-form-field>
+            <br>
+            <mat-form-field class="fullWidth">
+                <mat-label for="numeroTarjetaProfesional" class="text-info titleInput">Número Tarjeta Profesional:</mat-label><br>
+                <input class="inputAdd" matInput type="text" formControlName="numeroTarjetaProfesional" pattern="^([0-9]+-)*[0-9]+$" (click)="hideError('crear')" (focus)="hideError('crear')">
+                <mat-error *ngIf="(numeroTarjetaProfesional.dirty || numeroTarjetaProfesional.touched) && numeroTarjetaProfesional.invalid && numeroTarjetaProfesional.errors.required">Escribe el número de la tarjeta profesional</mat-error>
+                <mat-error *ngIf="(numeroTarjetaProfesional.dirty || numeroTarjetaProfesional.touched) && numeroTarjetaProfesional.invalid && numeroTarjetaProfesional.errors.pattern">Número de tarjeta profesional no válido</mat-error>
+            </mat-form-field>
+            <br>
+            <mat-form-field class="fullWidth">
+                <mat-label for="anosExperiencia" class="text-info titleInput">Años de experiencia:</mat-label><br>
+                <input class="inputAdd" matInput type="text" formControlName="anosExperiencia" pattern="^[0-9]+$" (click)="hideError('crear')" (focus)="hideError('crear')">
+                <mat-error *ngIf="(anosExperiencia.dirty || anosExperiencia.touched) && anosExperiencia.invalid && anosExperiencia.errors.required">Escribe el número de años de experiencia</mat-error>
+                <mat-error *ngIf="(anosExperiencia.dirty || anosExperiencia.touched) && anosExperiencia.invalid && anosExperiencia.errors.pattern">Campo no válido</mat-error>
+            </mat-form-field>
+            <br>
+            <mat-form-field class="fullWidth">
+                <mat-label for="especialidad" class="text-info titleInput">Especialidad:</mat-label><br>
+                <input class="inputAdd" matInput type="text" formControlName="especialidad" (click)="hideError('crear')" (focus)="hideError('crear')">
+                <mat-error *ngIf="(especialidad.dirty || especialidad.touched) && especialidad.invalid && especialidad.errors.required">Escribe la especialidad del médico</mat-error>
+                <mat-error *ngIf="(especialidad.dirty || especialidad.touched) && especialidad.invalid && especialidad.errors.maxlength">Se ha excedido el límite de caracteres</mat-error>
+            </mat-form-field>
+            <br>
+            <div style="text-align: center; width: 70%; margin: 0 auto;">
+                <mat-form-field>
+                    <mat-label for="horaInicioAtencion" class="text-info titleInputHora">Hora Inicio Atención:</mat-label><br>
+                    <mat-select formControlName="horaInicioAtencion" (click)="hideError('crear')" (focus)="hideError('crear')">
+                        <ng-container *ngFor="let hora of horasDisponibles">
+                            <mat-option [value]="hora">{{hora}}</mat-option>
+                        </ng-container>
+                    </mat-select>
+                    <mat-error *ngIf="(horaInicioAtencion.dirty || horaInicioAtencion.touched) && horaInicioAtencion.invalid && horaInicioAtencion.errors.required">Selecciona la hora</mat-error>
+                </mat-form-field>
+                <br>
+                <mat-radio-group [(ngModel)]="anteMeridiemInicio" [ngModelOptions]="{standalone: true}" [name]="anteMeridiemInicio" class="RadiobotonesHora" (click)="hideError('crear')" (focus)="hideError('crear')">
+                    <mat-radio-button value="1" style="font-weight: bold; padding-right: 10px;">A.M</mat-radio-button>
+                    <mat-radio-button value="2" style="font-weight: bold; padding-left: 10px;">P.M</mat-radio-button>
+                </mat-radio-group>
+            </div>
+            <br>
+            <div style="text-align: center; width: 70%; margin: 0 auto;">
+                <mat-form-field>
+                    <mat-label for="horaFinAtencion" class="text-info titleInputHora">Hora Fin Atención:</mat-label><br>
+                    <mat-select formControlName="horaFinAtencion" (click)="hideError('crear')" (focus)="hideError('crear')">
+                        <ng-container *ngFor="let hora of horasDisponibles">
+                            <mat-option [value]="hora">{{hora}}</mat-option>
+                        </ng-container>
+                    </mat-select>
+                    <mat-error *ngIf="(horaFinAtencion.dirty || horaFinAtencion.touched) && horaFinAtencion.invalid && horaFinAtencion.errors.required">Selecciona la hora</mat-error>
+                </mat-form-field>
+                <br>
+                <mat-radio-group [(ngModel)]="anteMeridiemFin" [ngModelOptions]="{standalone: true}" [name]="anteMeridiemFin" class="RadiobotonesHora" (click)="hideError('crear')" (focus)="hideError('crear')">
+                    <mat-radio-button value="3" style="font-weight: bold; padding-right: 10px;">A.M</mat-radio-button>
+                    <mat-radio-button value="4" style="font-weight: bold; padding-left: 10px;">P.M</mat-radio-button>
+                </mat-radio-group>
+            </div>
+            <br>
+            <div #errorServidorAddMedico class="errorServidor">error en el servidor</div>
+            <br>
+            <div class="centered">
+                <button mat-raised-button id="guardarMedico" [disabled]="!addMedicoForm.valid">Guardar</button>
+                <button mat-raised-button id="cancelarMedico" type="button" (click)="cerrarCrearMedico()">Cancelar</button>
+            </div>
+        </form>
+    </ng-template>
+
     <div class="centered">
         <div style="font-weight: bold;">Añadir Médico</div>
-        <button mat-icon-button>
+        <button mat-icon-button (click)="crearMedico(templateCrear)">
             <img src="../../../assets/add.svg" style="width: 42px; height: 42px;">
         </button>
         <br>
         <br>
-        <button mat-raised-button id="salirBoton" type="button" (click)="cerrarDialogMedicos()">Salir</button>
+        <button mat-raised-button id="salirBoton" (click)="cerrarDialogMedicos()">Salir</button>
     </div>
 </div>
