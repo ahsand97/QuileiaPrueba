@@ -1,6 +1,6 @@
 <div>
     <h1 class="centro">Médicos</h1>
-    <mat-table *ngIf="medicos.length > 0" [dataSource]="dataSource" class="mat-elevation-z8">
+    <mat-table *ngIf="medicos.length > 0" [dataSource]="dataSourceTablaMedicos" class="mat-elevation-z8">
         <ng-container matColumnDef="id">
             <mat-header-cell *matHeaderCellDef> id </mat-header-cell>
             <mat-cell *matCellDef="let medico"> {{medico.id}} </mat-cell>
@@ -26,8 +26,8 @@
             <mat-cell *matCellDef="let medico; let i = index">
                 <div>
                     <button mat-raised-button class="opcionbutton detallebutton" (click)="getDetallesMedico(templateDetalles, medico.id)">Detalles</button>
-                    <button mat-raised-button class="opcionbutton editarbutton" (click)="updateMedico(medico.id)">Editar</button>
-                    <button mat-raised-button class="opcionbutton borrarbutton" (click)="borrarMedico(medico.id, i)">Borrar</button>
+                    <button mat-raised-button class="opcionbutton editarbutton" (click)="updateMedico(templateActualizar, medico.id, i)">Editar</button>
+                    <button mat-raised-button class="opcionbutton borrarbutton" (click)="borrarMedico(templateDelete, medico, i)">Borrar</button>
                 </div>
             </mat-cell>
         </ng-container>
@@ -70,7 +70,7 @@
             <br>
         </div>
         <div class="fullWidth centered">
-            <button mat-raised-button id="salirBoton" type="button" (click)="cerrarDetallesMedico()">Atrás</button>
+            <button mat-raised-button id="salirBoton" type="button" (click)="cerrarDialog('dialogDetallesMedico')">Atrás</button>
         </div>
     </ng-template>
 
@@ -156,13 +156,106 @@
                 </mat-radio-group>
             </div>
             <br>
-            <div #errorServidorAddMedico class="errorServidor">error en el servidor</div>
+            <div #mensajeServidorAddMedico class="errorServidor"></div>
             <br>
             <div class="centered">
-                <button mat-raised-button id="guardarMedico" [disabled]="!addMedicoForm.valid">Guardar</button>
-                <button mat-raised-button id="cancelarMedico" type="button" (click)="cerrarCrearMedico()">Cancelar</button>
+                <button mat-raised-button class="botonesFormDialogOk" [disabled]="!addMedicoForm.valid">Guardar</button>
+                <button mat-raised-button class="botonesFormDialogCancel" type="button" (click)="cerrarDialog('dialogCrearMedico')">Cancelar</button>
             </div>
         </form>
+    </ng-template>
+
+    <ng-template #templateActualizar let-data>
+        <h1 class="centro">Actualizar Información</h1>
+        <form [formGroup]="updateMedicoForm" #formDirectiveUpdateMedico="ngForm" (ngSubmit)="submitUpdateMedico(data.idMedico, data.indexMedico)" autocomplete="off">
+            <mat-form-field class="fullWidth">
+                <mat-label for="nombreUpdate" class="text-info titleInput">Nombre:</mat-label><br>
+                <input #inputNombreUpdateMedico class="inputAdd" matInput type="text" formControlName="nombreUpdate" (ngModelChange)="changesInputUpdateVerificacion('nombreUpdate')" (click)="hideError('actualizar')" (focus)="hideError('actualizar'); inputNombreUpdateMedico.select()">
+                <mat-error *ngIf="(nombreUpdate.dirty || nombreUpdate.touched) && nombreUpdate.invalid && nombreUpdate.errors.maxlength">Se ha excedido el límite de caracteres</mat-error>
+            </mat-form-field>
+            <br>
+            <mat-form-field class="fullWidth">
+                <mat-label for="tipoIdentificacionUpdate" class="text-info titleInput">Tipo de Identificación:</mat-label><br>
+                <mat-select formControlName="tipoIdentificacionUpdate" (click)="hideError('actualizar')" (focus)="hideError('actualizar')">
+                    <ng-container *ngFor="let tipoIdentidad of tipoIdentidades">
+                        <mat-option [value]="tipoIdentidad">{{tipoIdentidad}}</mat-option>
+                    </ng-container>
+                </mat-select>
+                <mat-error *ngIf="(tipoIdentificacionUpdate.dirty || tipoIdentificacionUpdate.touched) && tipoIdentificacionUpdate.invalid && tipoIdentificacionUpdate.errors.required">Selecciona el tipo de identificación</mat-error>
+            </mat-form-field>
+            <br>
+            <mat-form-field class="fullWidth">
+                <mat-label for="identificacionUpdate" class="text-info titleInput">Identificación:</mat-label><br>
+                <input #inputIdentificacionUpdateMedico class="inputAdd" matInput type="text" formControlName="identificacionUpdate" (ngModelChange)="changesInputUpdateVerificacion('identificacionUpdate')" (click)="hideError('actualizar')" (focus)="hideError('actualizar'); inputIdentificacionUpdateMedico.select()">
+                <mat-error *ngIf="(identificacionUpdate.dirty || identificacionUpdate.touched) && identificacionUpdate.invalid && identificacionUpdate.errors.maxlength">Se ha excedido el límite de caracteres</mat-error>
+            </mat-form-field>
+            <br>
+            <mat-form-field class="fullWidth">
+                <mat-label for="numeroTarjetaProfesionalUpdate" class="text-info titleInput">Número Tarjeta Profesional:</mat-label><br>
+                <input #inputNumeroTarjetaProfesionalUpdateMedico class="inputAdd" matInput type="text" formControlName="numeroTarjetaProfesionalUpdate" pattern="^([0-9]+-)*[0-9]+$" (ngModelChange)="changesInputUpdateVerificacion('numeroTarjetaProfesionalUpdate')" (click)="hideError('actualizar')" (focus)="hideError('actualizar'); inputNumeroTarjetaProfesionalUpdateMedico.select()">
+                <mat-error *ngIf="(numeroTarjetaProfesionalUpdate.dirty || numeroTarjetaProfesionalUpdate.touched) && numeroTarjetaProfesionalUpdate.invalid && numeroTarjetaProfesionalUpdate.errors.pattern">Número de tarjeta profesional no válido</mat-error>
+            </mat-form-field>
+            <br>
+            <mat-form-field class="fullWidth">
+                <mat-label for="anosExperienciaUpdate" class="text-info titleInput">Años de experiencia:</mat-label><br>
+                <input #inputAnosExperienciaUpdateMedico class="inputAdd" matInput type="text" formControlName="anosExperienciaUpdate" pattern="^[0-9]+$" (ngModelChange)="changesInputUpdateVerificacion('anosExperienciaUpdate')" (click)="hideError('actualizar')" (focus)="hideError('actualizar'); inputAnosExperienciaUpdateMedico.select()">
+                <mat-error *ngIf="(anosExperienciaUpdate.dirty || anosExperienciaUpdate.touched) && anosExperienciaUpdate.invalid && anosExperienciaUpdate.errors.pattern">Campo no válido</mat-error>
+            </mat-form-field>
+            <br>
+            <mat-form-field class="fullWidth">
+                <mat-label for="especialidadUpdate" class="text-info titleInput">Especialidad:</mat-label><br>
+                <input #inputEspecialidadUpdateMedico class="inputAdd" matInput type="text" formControlName="especialidadUpdate" (ngModelChange)="changesInputUpdateVerificacion('especialidadUpdate')" (click)="hideError('actualizar')" (focus)="hideError('actualizar'); inputEspecialidadUpdateMedico.select()">
+                <mat-error *ngIf="(especialidadUpdate.dirty || especialidadUpdate.touched) && especialidadUpdate.invalid && especialidadUpdate.errors.maxlength">Se ha excedido el límite de caracteres</mat-error>
+            </mat-form-field>
+            <br>
+            <div style="text-align: center; width: 70%; margin: 0 auto;">
+                <mat-form-field>
+                    <mat-label for="horaInicioAtencionUpdate" class="text-info titleInputHora">Hora Inicio Atención:</mat-label><br>
+                    <mat-select formControlName="horaInicioAtencionUpdate" (click)="hideError('actualizar')" (focus)="hideError('actualizar')">
+                        <ng-container *ngFor="let hora of horasDisponibles">
+                            <mat-option [value]="hora">{{hora}}</mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+                <br>
+                <mat-radio-group [(ngModel)]="anteMeridiemInicio" [ngModelOptions]="{standalone: true}" [name]="anteMeridiemInicio" class="RadiobotonesHora" (ngModelChange)="changesInputUpdateVerificacion('anteMeridiemInicio')" (click)="hideError('actualizar')" (focus)="hideError('actualizar')">
+                    <mat-radio-button value="1" style="font-weight: bold; padding-right: 10px;">A.M</mat-radio-button>
+                    <mat-radio-button value="2" style="font-weight: bold; padding-left: 10px;">P.M</mat-radio-button>
+                </mat-radio-group>
+            </div>
+            <br>
+            <div style="text-align: center; width: 70%; margin: 0 auto;">
+                <mat-form-field>
+                    <mat-label for="horaFinAtencionUpdate" class="text-info titleInputHora">Hora Fin Atención:</mat-label><br>
+                    <mat-select formControlName="horaFinAtencionUpdate" (click)="hideError('actualizar')" (focus)="hideError('actualizar')">
+                        <ng-container *ngFor="let hora of horasDisponibles">
+                            <mat-option [value]="hora">{{hora}}</mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+                <br>
+                <mat-radio-group [(ngModel)]="anteMeridiemFin" [ngModelOptions]="{standalone: true}" [name]="anteMeridiemFin" class="RadiobotonesHora" (ngModelChange)="changesInputUpdateVerificacion('anteMeridiemFin')" (click)="hideError('actualizar')" (focus)="hideError('actualizar')">
+                    <mat-radio-button value="3" style="font-weight: bold; padding-right: 10px;">A.M</mat-radio-button>
+                    <mat-radio-button value="4" style="font-weight: bold; padding-left: 10px;">P.M</mat-radio-button>
+                </mat-radio-group>
+            </div>
+            <br>
+            <div #mensajeServidorUpdateMedico class="errorServidor"></div>
+            <br>
+            <div class="centered">
+                <button mat-raised-button class="botonesFormDialogOk" [disabled]="(!updateMedicoForm.valid || deshabilitarBotonUpdateForm)">Actualizar</button>
+                <button mat-raised-button class="botonesFormDialogCancel" type="button" (click)="cerrarDialog('dialogUpdateMedico')">Cancelar</button>
+            </div>
+        </form>
+    </ng-template>
+
+    <ng-template #templateDelete let-data>
+        <h3 class="centro">Deseas eliminar al médico {{data.medico.nombre}} con identificación {{data.medico.identificacion}} del sistema?</h3>
+        <div #mensajeServidorDeleteMedico class="errorServidor"><br><br></div>
+        <div class="centered">
+            <button mat-raised-button class="botonesFormDialogOk" (click)="submitBorrarMedico(data.medico.id, data.indexMedico)">Aceptar</button>
+            <button mat-raised-button class="botonesFormDialogCancel" (click)="cerrarDialog('dialogBorrarMedico')">Cancelar</button>
+        </div>
     </ng-template>
 
     <div class="centered">
@@ -172,6 +265,6 @@
         </button>
         <br>
         <br>
-        <button mat-raised-button id="salirBoton" (click)="cerrarDialogMedicos()">Salir</button>
+        <button mat-raised-button id="salirBoton" (click)="cerrarDialog(null)">Salir</button>
     </div>
 </div>

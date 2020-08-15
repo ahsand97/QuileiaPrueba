@@ -98,31 +98,31 @@ h1.centro{
     flex-direction: row;
 }
 
-#guardarMedico:enabled{
+.botonesFormDialogOk:enabled{
     margin-right: 10px;
     background-color: limegreen;
     color: white;
 }
 
-#guardarMedico:enabled:hover{
+.botonesFormDialogOk:enabled:hover{
     margin-right: 10px;
     background-color: white;
     color: limegreen;
 }
 
-#guardarMedico:disabled{
+.botonesFormDialogOk:disabled{
     margin-right: 10px;
     background-color: gray;
     color: white;
 }
 
-#cancelarMedico{
+.botonesFormDialogCancel{
     margin-left: 10px;
     background-color: crimson;
     color: white;
 }
 
-#cancelarMedico:enabled:hover{
+.botonesFormDialogCancel:enabled:hover{
     margin-left: 10px;
     background-color: white;
     color: crimson;
@@ -133,5 +133,15 @@ h1.centro{
     font-size: 18px;
     color: #ff4747;
     font-weight: bold;
-    
-  }
+    display: none;
+}
+
+::ng-deep .snackBarUpdate{
+    background-color: #424242;
+    color: white;
+}
+
+::ng-deep .snackBarDelete{
+    background-color: crimson;
+    color: white;
+}
