@@ -118,11 +118,23 @@ public class MedicoService {
         }
         else{
             Optional<Medico> medicoFromDB = medicoRepository.findById(Long.valueOf(id));
-            if(medicoFromDB.isEmpty()){
+            if(!medicoFromDB.isPresent()){
                 throw new Exception("Médico no encontrado en el sistema.");
             }
             else{
                 Medico medico = medicoFromDB.get();
+                Optional<Medico> aux = medicoRepository.findByIdentificacion(medicoDTO.getIdentificacion());
+                if(aux.isPresent()){
+                    if(aux.get().getId() != medico.getId()){
+                        throw new Exception("Ya existe un médico con ese número de identificación en el sistema.");
+                    }
+                }
+                Optional<Medico> auxDos = medicoRepository.findByNumeroTarjetaProfesional(medicoDTO.getNumeroTarjetaProfesional());
+                if(auxDos.isPresent()){
+                    if(auxDos.get().getId() != medico.getId()){
+                        throw new Exception("Ya existe un médico con ese número de tarjeta profesional en el sistema.");
+                    }
+                }
                 medico.setNombre(medicoDTO.getNombre());
                 medico.setIdentificacion(medicoDTO.getIdentificacion());
                 medico.setTipoIdentificacion(medicoDTO.getTipoIdentificacion());
@@ -140,13 +152,13 @@ public class MedicoService {
     }
     
     public MedicoDTO deleteMedico(String id) throws Exception{
-        Medico medico = medicoRepository.findById(Long.valueOf(id)).get();
-        if(medico == null){
+        Optional<Medico> medico = medicoRepository.findById(Long.valueOf(id));
+        if(!medico.isPresent()){
             throw new Exception("Médico no encontrado en el sistema.");
         }
         else{
-            MedicoDTO resp = medicoMapper.fromMedico(medico);
-            medicoRepository.delete(medico);
+            MedicoDTO resp = medicoMapper.fromMedico(medico.get());
+            medicoRepository.delete(medico.get());
             return resp;
         }
     }
