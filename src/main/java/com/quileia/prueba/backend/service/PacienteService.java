@@ -103,11 +103,17 @@ public class PacienteService {
         }
         else{
             Optional<Paciente> pacienteFromDB = pacienteRepository.findById(Long.valueOf(id));
-            if(pacienteFromDB.isEmpty()){
-                throw new Exception("Médico no encontrado en el sistema.");
+            if(!pacienteFromDB.isPresent()){
+                throw new Exception("Paciente no encontrado en el sistema.");
             }
             else{
                 Paciente paciente = pacienteFromDB.get();
+                Optional<Paciente> aux = pacienteRepository.findByIdentificacion(pacienteDTO.getIdentificacion());
+                if(aux.isPresent()){
+                    if(aux.get().getId() != paciente.getId()){
+                        throw new Exception("Ya existe un paciente con ese número de identificación en el sistema.");
+                    }
+                }
                 paciente.setNombre(pacienteDTO.getNombre());
                 paciente.setIdentificacion(pacienteDTO.getIdentificacion());
                 paciente.setTipoIdentificacion(pacienteDTO.getTipoIdentificacion());
@@ -124,7 +130,7 @@ public class PacienteService {
     
     public PacienteDTO deletePaciente(String id) throws Exception{
         Optional<Paciente> paciente = pacienteRepository.findById(Long.valueOf(id));
-        if(paciente.isEmpty()){
+        if(!paciente.isPresent()){
             throw new Exception("Paciente no encontrado en el sistema.");
         }
         else{
