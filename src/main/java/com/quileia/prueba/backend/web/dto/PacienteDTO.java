@@ -6,7 +6,6 @@
 package com.quileia.prueba.backend.web.dto;
 
 import java.io.Serializable;
-import java.sql.Clob;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,5 +26,5 @@ public class PacienteDTO implements Serializable{
     private String tipoIdentificacion;
     private Date fechaNacimiento;
     private String eps;
-    private Clob historiaClinica;
+    private String historiaClinica;
 }

@@ -5,11 +5,9 @@
  */
 package com.quileia.prueba.backend.service;
 
-import com.quileia.prueba.backend.data.entity.Medico;
 import com.quileia.prueba.backend.data.entity.Paciente;
 import com.quileia.prueba.backend.data.repository.PacienteRepository;
 import com.quileia.prueba.backend.service.mapper.PacienteMapper;
-import com.quileia.prueba.backend.web.dto.MedicoDTO;
 import com.quileia.prueba.backend.web.dto.PacienteDTO;
 import java.util.ArrayList;
 import java.util.Date;

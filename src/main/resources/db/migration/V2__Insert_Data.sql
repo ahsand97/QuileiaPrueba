@@ -44,8 +44,76 @@ INSERT INTO "medicos"("nombre", "identificacion", "tipoIdentificacion", "numeroT
 ('Echo Zephania Blake','16330212 0971','Cédula de Ciudadanía','16690517 8262',5,'orci tincidunt adipiscing. Mauris molestie','08:00 A.M','08:00 P.M'),
 ('Wayne Damian Jelani','16480405 0591','Cédula de Ciudadanía','16331208 6386',2,'non, dapibus rutrum, justo. Praesent','08:00 A.M','08:00 P.M');
 
-INSERT INTO "pacientes"("nombre", "identificacion", "tipoIdentificacion", "fechaNacimiento", "EPS") VALUES
-('Ahsan David Pérez Bermúdez', '123456789', 'Cédula de Ciudadanía', '1997-06-05', 'Comfamiliar S.A'),
-('Carlos Andrés Baena', '22222222', 'Cédula de Ciudadanía', '1970-06-21', 'CafeSalud'),
-('Pedro Arturo Ahmed', '33333333', 'Cédula de Ciudadanía', '1995-05-20', 'Sura'),
-('Laura Andrea Perea', '111111111', 'Cédula de Ciudadanía', '1980-01-20', 'Aliansalud EPS');
+INSERT INTO "pacientes"("nombre", "identificacion", "tipoIdentificacion", "fechaNacimiento", "EPS", "historiaClinica") VALUES
+('Ahsan David Pérez Bermúdez', '123456789', 'Cédula de Ciudadanía', '1997-06-05', 'Comfamiliar S.A',
+'Motivo de la hospitalización: mal control de su diabetes mellitus.
+
+Anamnesis próxima. Paciente portadora de una diabetes mellitus, controlada con régimen (que sigue en forma irregular), e hipoglicemiantes orales. Desde hace unos dos a tres meses presenta polidipsia, poliuria y ha bajado de peso. Las veces que se ha controlado la glicemia, ha estado sobre 200 mg/dL. Desde tres días atrás comenzó a notar disuria dolorosa y poliaquiuria. También ha sentido un dolor sordo ubicado en la región lumbar derecha y cree haber tenido fiebre, pero no se la ha registrado. La orina la ha notado más fuerte de olor.
+Antecedentes:
+
+a) Mórbidos:
+
+-Diabetes Mellitus del adulto, diagnosticada 10 años atrás. Se trata con régimen e hipoglicemiantes orales.
+-Hipertensión arterial de 8 años de evolución.
+-Varios episodios de infecciones urinarias bajas.
+
+b) Ginecoobstétricos: Menopausia a los 52 años. Tuvo 2 hijos de término, uno de los cuales pesó 4.200 gramos al nacer. No se ha efectuado controles ginecológicos ni mamografías en los últimos años.
+
+(Nota: se puede omitir información como la menarquia o las menstruaciones, ya que no va a influir en el análisis de su problema más reciente)
+
+c) Hábitos:
+
+-Tabaquismo: fumó un promedio de 12 cigarrillos diarios, durante 20 años. Dejó de fumar 10 años atrás.
+-Alcohol: ocasionalmente toma una copa de vino con las comidas.
+
+d) Medicamentos:
+
+-Glibenclamida 5 mg (1 tableta al desayuno y 1 tableta con la comida).
+-Lisinopril 5 mg (1 tableta en la mañana)
+
+e) Alergias: dice no tener alergias.
+
+f) Antecedentes sociales y personales: la paciente vive con su marido y una hija. Tiene dos hijos casados. Desempeña labores de casa. El apoyo que tiene de su familia es muy bueno.
+
+g) Antecedentes familiares: su padre y una tía fueron diabéticos; su madre fue hipertensa.
+
+h) Inmunizaciones: las de la infancia.
+
+Revisión por sistemas: no ha tenido tos, disnea ni dolores precordiales. Habitualmente tiende a ser algo constipada. '),
+('Carlos Andrés Baena', '22222222', 'Cédula de Ciudadanía', '1970-06-21', 'CafeSalud', null),
+('Pedro Arturo Ahmed', '33333333', 'Cédula de Ciudadanía', '1995-05-20', 'Sura', null),
+('Laura Andrea Perea', '111111111', 'Cédula de Ciudadanía', '1980-01-20', 'Aliansalud EPS',
+'Motivo de la hospitalización: mal control de su diabetes mellitus.
+
+Anamnesis próxima. Paciente portadora de una diabetes mellitus, controlada con régimen (que sigue en forma irregular), e hipoglicemiantes orales. Desde hace unos dos a tres meses presenta polidipsia, poliuria y ha bajado de peso. Las veces que se ha controlado la glicemia, ha estado sobre 200 mg/dL. Desde tres días atrás comenzó a notar disuria dolorosa y poliaquiuria. También ha sentido un dolor sordo ubicado en la región lumbar derecha y cree haber tenido fiebre, pero no se la ha registrado. La orina la ha notado más fuerte de olor.
+Antecedentes:
+
+a) Mórbidos:
+
+-Diabetes Mellitus del adulto, diagnosticada 10 años atrás. Se trata con régimen e hipoglicemiantes orales.
+-Hipertensión arterial de 8 años de evolución.
+-Varios episodios de infecciones urinarias bajas.
+
+b) Ginecoobstétricos: Menopausia a los 52 años. Tuvo 2 hijos de término, uno de los cuales pesó 4.200 gramos al nacer. No se ha efectuado controles ginecológicos ni mamografías en los últimos años.
+
+(Nota: se puede omitir información como la menarquia o las menstruaciones, ya que no va a influir en el análisis de su problema más reciente)
+
+c) Hábitos:
+
+-Tabaquismo: fumó un promedio de 12 cigarrillos diarios, durante 20 años. Dejó de fumar 10 años atrás.
+-Alcohol: ocasionalmente toma una copa de vino con las comidas.
+
+d) Medicamentos:
+
+-Glibenclamida 5 mg (1 tableta al desayuno y 1 tableta con la comida).
+-Lisinopril 5 mg (1 tableta en la mañana)
+
+e) Alergias: dice no tener alergias.
+
+f) Antecedentes sociales y personales: la paciente vive con su marido y una hija. Tiene dos hijos casados. Desempeña labores de casa. El apoyo que tiene de su familia es muy bueno.
+
+g) Antecedentes familiares: su padre y una tía fueron diabéticos; su madre fue hipertensa.
+
+h) Inmunizaciones: las de la infancia.
+
+Revisión por sistemas: no ha tenido tos, disnea ni dolores precordiales. Habitualmente tiende a ser algo constipada.');
