@@ -4,12 +4,12 @@ import { MedicosComponent } from '../medicos/medicos.component';
 import { PacientesComponent } from '../pacientes/pacientes.component';
 import { CitasComponent } from '../citas/citas.component';
 import { MedicosService } from 'src/app/services/medicos.service';
-
+import { PacientesService } from 'src/app/services/pacientes.service';
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
-  styleUrls: ['./main.component.css']
+  styleUrls: ['./main.component.css'],
 })
 export class MainComponent implements OnInit {
 
@@ -19,7 +19,7 @@ export class MainComponent implements OnInit {
   heightDialog:number;
   witdhDialog:string;
 
-  constructor(private dialog:MatDialog, private medicosService:MedicosService) { }
+  constructor(private dialog:MatDialog, private medicosService:MedicosService, private pacientesService:PacientesService) { }
 
   @HostListener('window:resize', ['$event'])
   getScreenSize() {
@@ -50,9 +50,20 @@ export class MainComponent implements OnInit {
     }
   }
 
+
   abrirDialogPacientes(){
     if(this.dialogPacientesAbierto == false){
-      let dialogRef = this.dialog.open(PacientesComponent, {width : this.witdhDialog, maxHeight: this.heightDialog, autoFocus: false});
+      let pacientes = [];
+      this.pacientesService.getPacientes().subscribe(next => {
+        next.forEach(e =>{
+          let fechaNacimiento = e.fechaNacimiento.toString().split('-');
+          fechaNacimiento[2] = fechaNacimiento[2].slice(0,2);
+          let date = new Date(Number(fechaNacimiento[0]), Number(fechaNacimiento[1]) -1, Number(fechaNacimiento[2]));
+          e.fechaNacimiento = date;
+          pacientes.push(e);
+        })
+      });
+      let dialogRef = this.dialog.open(PacientesComponent, {data: {'pacientes': pacientes}, width : this.witdhDialog, maxHeight: this.heightDialog, autoFocus: false});
       dialogRef.afterOpened().subscribe(() => {
         this.dialogPacientesAbierto = true;
       });

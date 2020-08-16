@@ -21,5 +21,4 @@ export class MedicoDTO {
         this.horaInicioAtencion = horaInicioAtencion;
         this.horaFinAtencion = horaFinAtencion;
     }
-
 }

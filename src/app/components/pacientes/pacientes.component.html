@@ -1,3 +1,199 @@
 <div>
     <h1 class="centro">Pacientes</h1>
+    <mat-table *ngIf="pacientes.length > 0" [dataSource]="dataSourceTablaPacientes" class="mat-elevation-z8">
+        <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef> id </mat-header-cell>
+            <mat-cell *matCellDef="let paciente"> {{paciente.id}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Nombre">
+            <mat-header-cell *matHeaderCellDef> Nombre </mat-header-cell>
+            <mat-cell *matCellDef="let paciente"> {{paciente.nombre}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Tipo Identificación">
+            <mat-header-cell *matHeaderCellDef> Tipo Identificación </mat-header-cell>
+            <mat-cell *matCellDef="let paciente"> {{paciente.tipoIdentificacion}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Identificación">
+            <mat-header-cell *matHeaderCellDef> Identificación </mat-header-cell>
+            <mat-cell *matCellDef="let paciente"> {{paciente.identificacion}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Opciones">
+            <mat-header-cell *matHeaderCellDef> Opciones </mat-header-cell>
+            <mat-cell *matCellDef="let paciente; let i = index">
+                <div>
+                    <button mat-raised-button class="opcionbutton detallebutton" (click)="getDetallesPaciente(templateDetalles, paciente.id)">Detalles</button>
+                    <button mat-raised-button class="opcionbutton editarbutton" (click)="updatePaciente(templateActualizar, paciente.id, i)">Editar</button>
+                    <button mat-raised-button class="opcionbutton borrarbutton" (click)="borrarPaciente(templateDelete, paciente, i)">Borrar</button>
+                </div>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <br>
+    <br>
+    <ng-template #templateDetalles let-data>
+        <h1 class="centro">Información Paciente</h1>
+        <div class="fullWidth">
+            <h3 style="display: inline-block; font-weight: bold;">Id:&nbsp;</h3>
+            <h3 style="display: inline-block;">{{data.paciente.id}}</h3>
+            <br>
+            <h3 style="display: inline-block; font-weight: bold;">Nombre:&nbsp;</h3>
+            <h3 style="display: inline-block;">{{data.paciente.nombre}}</h3>
+            <br>
+            <h3 style="display: inline-block; font-weight: bold;">Tipo Identificación:&nbsp;</h3>
+            <h3 style="display: inline-block;">{{data.paciente.tipoIdentificacion}}</h3>
+            <br>
+            <h3 style="display: inline-block; font-weight: bold;">Identificación:&nbsp;</h3>
+            <h3 style="display: inline-block;">{{data.paciente.identificacion}}</h3>
+            <br>
+            <h3 style="display: inline-block; font-weight: bold;">Fecha Nacimiento:&nbsp;</h3>
+            <h3 style="display: inline-block;">{{data.paciente.fechaNacimiento | date: 'dd/MM/yyyy'}}</h3>
+            <br>
+            <h3 style="display: inline-block; font-weight: bold;">EPS:&nbsp;</h3>
+            <h3 style="display: inline-block;">{{data.paciente.eps}}</h3>
+            <br>
+        </div>
+        <h3 style="text-align: center; font-weight: bold;">Historia Clínica:&nbsp;</h3>
+        <div class="centered">
+            <mat-form-field *ngIf="data.paciente.historiaClinica; else elseDetallesHistoriaClinica" style="width: 70%;" appearance="fill">
+                <textarea matInput class="textAreaInputReadOnly" readonly>{{data.paciente.historiaClinica}}</textarea>
+            </mat-form-field>
+            <ng-template #elseDetallesHistoriaClinica>
+                No se ha registrado una historia clínica para éste paciente.
+            </ng-template>
+        </div>
+        <br>
+        <div class="fullWidth centered">
+            <button mat-raised-button id="salirBoton" type="button" (click)="cerrarDialog('dialogDetallesPaciente')">Atrás</button>
+        </div>
+    </ng-template>
+    <ng-template #templateCrear>
+        <h1 class="centro">Añadir Paciente</h1>
+        <form [formGroup]="addPacienteForm" #formDirectiveAddPaciente="ngForm" (ngSubmit)="submitCrearPaciente(formDirectiveAddPaciente)" autocomplete="off">
+            <mat-form-field class="fullWidth">
+                <mat-label for="nombre" class="text-info titleInput">Nombre:</mat-label><br>
+                <input class="inputAdd" matInput type="text" formControlName="nombre" (click)="hideError('crear')" (focus)="hideError('crear')">
+                <mat-error *ngIf="(nombre.dirty || nombre.touched) && nombre.invalid && nombre.errors.required">Escribe el nombre del paciente</mat-error>
+                <mat-error *ngIf="(nombre.dirty || nombre.touched) && nombre.invalid && nombre.errors.maxlength">Se ha excedido el límite de caracteres</mat-error>
+            </mat-form-field>
+            <br>
+            <mat-form-field class="fullWidth">
+                <mat-label for="tipoIdentificacion" class="text-info titleInput">Tipo de Identificación:</mat-label><br>
+                <mat-select formControlName="tipoIdentificacion" (click)="hideError('crear')" (focus)="hideError('crear')">
+                    <ng-container *ngFor="let tipoIdentidad of tipoIdentidades">
+                        <mat-option [value]="tipoIdentidad">{{tipoIdentidad}}</mat-option>
+                    </ng-container>
+                </mat-select>
+                <mat-error *ngIf="(tipoIdentificacion.dirty || tipoIdentificacion.touched) && tipoIdentificacion.invalid && tipoIdentificacion.errors.required">Selecciona el tipo de identificación</mat-error>
+            </mat-form-field>
+            <br>
+            <mat-form-field class="fullWidth">
+                <mat-label for="identificacion" class="text-info titleInput">Identificación:</mat-label><br>
+                <input class="inputAdd" matInput type="text" formControlName="identificacion" pattern="^[A-Za-z0-9][A-Za-z0-9-]*$" (click)="hideError('crear')" (focus)="hideError('crear')">
+                <mat-error *ngIf="(identificacion.dirty || identificacion.touched) && identificacion.invalid && identificacion.errors.required">Escribe la identificacion</mat-error>
+                <mat-error *ngIf="(identificacion.dirty || identificacion.touched) && identificacion.invalid && identificacion.errors.maxlength">Se ha excedido el límite de caracteres</mat-error>
+                <mat-error *ngIf="(identificacion.dirty || identificacion.touched) && identificacion.invalid && identificacion.errors.pattern">Identificación no válida</mat-error>
+            </mat-form-field>
+            <br>
+            <div style="text-align: center; width: 70%; margin: 0 auto;">
+                <mat-form-field appearance="fill">
+                    <mat-label for="fechaNacimiento" class="text-info titleInputHora">Fecha de Nacimiento:</mat-label><br>
+                    <input matInput #inputCalendarioAddPaciente [matDatepicker]="calendarioAddPaciente" formControlName="fechaNacimiento" [min]="minDate" [max]="maxDate" (click)="hideError('crear'); inputCalendarioAddPaciente.select()" (focus)="hideError('crear'); calendarioAddPaciente.open()" readonly>
+                    <mat-datepicker-toggle matSuffix [for]="calendarioAddPaciente"></mat-datepicker-toggle>
+                    <mat-datepicker #calendarioAddPaciente disabled="false"></mat-datepicker>
+                </mat-form-field>
+            </div>
+            <br>
+            <mat-form-field class="fullWidth">
+                <mat-label for="eps" class="text-info titleInput">EPS:</mat-label><br>
+                <input class="inputAdd" matInput type="text" formControlName="eps" (click)="hideError('crear')" (focus)="hideError('crear')">
+                <mat-error *ngIf="(eps.dirty || eps.touched) && eps.invalid && eps.errors.required">Escribe la EPS</mat-error>
+                <mat-error *ngIf="(eps.dirty || eps.touched) && eps.invalid && eps.errors.maxlength">Se ha excedido el límite de caracteres</mat-error>
+            </mat-form-field>
+            <br>
+            <mat-form-field class="fullWidth" appearance="fill">
+                <mat-label for="historiaClinica" class="text-info titleInput">Historia Clínica:</mat-label><br>
+                <textarea class="textAreaInput" matInput type="text" formControlName="historiaClinica" (click)="hideError('crear')" (focus)="hideError('crear')"></textarea>
+            </mat-form-field>
+            <br>
+            <div #mensajeServidorAddPaciente class="errorServidor"></div>
+            <br>
+            <div class="centered">
+                <button mat-raised-button class="botonesFormDialogOk" [disabled]="(!addPacienteForm.valid || !fechaNacimiento.value)">Guardar</button>
+                <button mat-raised-button class="botonesFormDialogCancel" type="button" (click)="cerrarDialog('dialogCrearPaciente')">Cancelar</button>
+            </div>
+        </form>
+    </ng-template>
+    <ng-template #templateActualizar let-data>
+        <h1 class="centro">Actualizar Información Paciente</h1>
+        <form [formGroup]="updatePacienteForm" #formDirectiveUpdatePaciente="ngForm" (ngSubmit)="submitUpdatePaciente(data.idPaciente, data.indexPaciente)" autocomplete="off">
+            <mat-form-field class="fullWidth">
+                <mat-label for="nombreUpdate" class="text-info titleInput">Nombre:</mat-label><br>
+                <input #inputNombreUpdatePaciente class="inputAdd" matInput type="text" formControlName="nombreUpdate" (ngModelChange)="changesInputUpdateVerificacion('nombreUpdate')" (click)="hideError('actualizar')" (focus)="hideError('actualizar'); inputNombreUpdatePaciente.select()">
+                <mat-error *ngIf="(nombreUpdate.dirty || nombreUpdate.touched) && nombreUpdate.invalid && nombreUpdate.errors.maxlength">Se ha excedido el límite de caracteres</mat-error>
+            </mat-form-field>
+            <br>
+            <mat-form-field class="fullWidth">
+                <mat-label for="tipoIdentificacionUpdate" class="text-info titleInput">Tipo de Identificación:</mat-label><br>
+                <mat-select formControlName="tipoIdentificacionUpdate" (click)="hideError('actualizar')" (focus)="hideError('actualizar')">
+                    <ng-container *ngFor="let tipoIdentidad of tipoIdentidades">
+                        <mat-option [value]="tipoIdentidad">{{tipoIdentidad}}</mat-option>
+                    </ng-container>
+                </mat-select>
+            </mat-form-field>
+            <br>
+            <mat-form-field class="fullWidth">
+                <mat-label for="identificacionUpdate" class="text-info titleInput">Identificación:</mat-label><br>
+                <input #inputIdentificacionUpdatePaciente class="inputAdd" matInput type="text" formControlName="identificacionUpdate" pattern="^[A-Za-z0-9][A-Za-z0-9-]*$" (ngModelChange)="changesInputUpdateVerificacion('identificacionUpdate')" (click)="hideError('actualizar')" (focus)="hideError('actualizar'); inputIdentificacionUpdatePaciente.select()">
+                <mat-error *ngIf="(identificacionUpdate.dirty || identificacionUpdate.touched) && identificacionUpdate.invalid && identificacionUpdate.errors.maxlength">Se ha excedido el límite de caracteres</mat-error>
+                <mat-error *ngIf="(identificacionUpdate.dirty || identificacionUpdate.touched) && identificacionUpdate.invalid && identificacionUpdate.errors.pattern">Identificación no válida</mat-error>
+            </mat-form-field>
+            <br>
+            <div style="text-align: center; width: 70%; margin: 0 auto;">
+                <mat-form-field appearance="fill">
+                    <mat-label for="fechaNacimientoUpdate" class="text-info titleInputHora">Fecha de Nacimiento:</mat-label><br>
+                    <input matInput #inputCalendarioUpdatePaciente [matDatepicker]="calendarioUpdatePaciente" formControlName="fechaNacimientoUpdate" [min]="minDate" [max]="maxDate" (click)="hideError('actualizar'); inputCalendarioUpdatePaciente.select()" (focus)="hideError('actualizar'); calendarioUpdatePaciente.open()" readonly>
+                    <mat-datepicker-toggle matSuffix [for]="calendarioUpdatePaciente"></mat-datepicker-toggle>
+                    <mat-datepicker #calendarioUpdatePaciente disabled="false"></mat-datepicker>
+                </mat-form-field>
+            </div>
+            <mat-form-field class="fullWidth">
+                <mat-label for="epsUpdate" class="text-info titleInput">EPS:</mat-label><br>
+                <input #inputEPSUpdatePaciente class="inputAdd" matInput type="text" formControlName="epsUpdate" (ngModelChange)="changesInputUpdateVerificacion('epsUpdate')" (click)="hideError('actualizar')" (focus)="hideError('actualizar'); inputEPSUpdatePaciente.select()">
+                <mat-error *ngIf="(epsUpdate.dirty || epsUpdate.touched) && epsUpdate.invalid && epsUpdate.errors.required">Escribe la EPS</mat-error>
+                <mat-error *ngIf="(epsUpdate.dirty || epsUpdate.touched) && epsUpdate.invalid && epsUpdate.errors.maxlength">Se ha excedido el límite de caracteres</mat-error>
+            </mat-form-field>
+            <br>
+            <mat-form-field class="fullWidth" appearance="fill">
+                <mat-label for="historiaClinicaUpdate" class="text-info titleInput">Historia Clínica:</mat-label><br>
+                <textarea #inputHistoriaClinicaUpdatePaciente class="textAreaInput" matInput type="text" formControlName="historiaClinicaUpdate" (ngModelChange)="changesInputUpdateVerificacion('historiaClinicaUpdate')" (click)="hideError('actualizar')" (focus)="hideError('actualizar'); inputHistoriaClinicaUpdatePaciente.select()"></textarea>
+            </mat-form-field>
+            <br>
+            <div #mensajeServidorUpdatePaciente class="errorServidor"></div>
+            <br>
+            <div class="centered">
+                <button mat-raised-button class="botonesFormDialogOk" [disabled]="(!updatePacienteForm.valid || deshabilitarBotonUpdateForm)">Actualizar</button>
+                <button mat-raised-button class="botonesFormDialogCancel" type="button" (click)="cerrarDialog('dialogUpdatePaciente')">Cancelar</button>
+            </div>
+        </form>
+    </ng-template>
+    <ng-template #templateDelete let-data>
+        <h3 class="centro">Deseas eliminar al paciente {{data.paciente.nombre}} con identificación {{data.paciente.identificacion}} del sistema?</h3>
+        <div #mensajeServidorDeletePaciente class="errorServidor"><br><br></div>
+        <div class="centered">
+            <button mat-raised-button class="botonesFormDialogOk" (click)="submitBorrarPaciente(data.paciente.id, data.indexPaciente)">Aceptar</button>
+            <button mat-raised-button class="botonesFormDialogCancel" (click)="cerrarDialog('dialogBorrarPaciente')">Cancelar</button>
+        </div>
+    </ng-template>
+
+    <div class="centered">
+        <div style="font-weight: bold;">Añadir Paciente</div>
+        <button mat-icon-button (click)="crearPaciente(templateCrear)">
+            <img src="../../../assets/add.svg" style="width: 42px; height: 42px;">
+        </button>
+        <br>
+        <br>
+        <button mat-raised-button id="salirBoton" (click)="cerrarDialog(null)">Atrás</button>
+    </div>
 </div>

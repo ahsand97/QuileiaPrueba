@@ -5,22 +5,18 @@
             <mat-header-cell *matHeaderCellDef> id </mat-header-cell>
             <mat-cell *matCellDef="let medico"> {{medico.id}} </mat-cell>
         </ng-container>
-
         <ng-container matColumnDef="Nombre">
             <mat-header-cell *matHeaderCellDef> Nombre </mat-header-cell>
             <mat-cell *matCellDef="let medico"> {{medico.nombre}} </mat-cell>
         </ng-container>
-
         <ng-container matColumnDef="Tipo Identificación">
             <mat-header-cell *matHeaderCellDef> Tipo Identificación </mat-header-cell>
             <mat-cell *matCellDef="let medico"> {{medico.tipoIdentificacion}} </mat-cell>
         </ng-container>
-
         <ng-container matColumnDef="Identificación">
             <mat-header-cell *matHeaderCellDef> Identificación </mat-header-cell>
             <mat-cell *matCellDef="let medico"> {{medico.identificacion}} </mat-cell>
         </ng-container>
-
         <ng-container matColumnDef="Opciones">
             <mat-header-cell *matHeaderCellDef> Opciones </mat-header-cell>
             <mat-cell *matCellDef="let medico; let i = index">
@@ -31,13 +27,11 @@
                 </div>
             </mat-cell>
         </ng-container>
-
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
     </mat-table>
     <br>
     <br>
-
     <ng-template #templateDetalles let-data>
         <h1 class="centro">Información Médico</h1>
         <div class="fullWidth">
@@ -73,7 +67,6 @@
             <button mat-raised-button id="salirBoton" type="button" (click)="cerrarDialog('dialogDetallesMedico')">Atrás</button>
         </div>
     </ng-template>
-
     <ng-template #templateCrear>
         <h1 class="centro">Añadir Médico</h1>
         <form [formGroup]="addMedicoForm" #formDirectiveAddMedico="ngForm" (ngSubmit)="submitCrearMedico(formDirectiveAddMedico)" autocomplete="off">
@@ -96,9 +89,10 @@
             <br>
             <mat-form-field class="fullWidth">
                 <mat-label for="identificacion" class="text-info titleInput">Identificación:</mat-label><br>
-                <input class="inputAdd" matInput type="text" formControlName="identificacion" (click)="hideError('crear')" (focus)="hideError('crear')">
+                <input class="inputAdd" matInput type="text" formControlName="identificacion" pattern="^[A-Za-z0-9][A-Za-z0-9-]*$" (click)="hideError('crear')" (focus)="hideError('crear')">
                 <mat-error *ngIf="(identificacion.dirty || identificacion.touched) && identificacion.invalid && identificacion.errors.required">Escribe la identificacion</mat-error>
                 <mat-error *ngIf="(identificacion.dirty || identificacion.touched) && identificacion.invalid && identificacion.errors.maxlength">Se ha excedido el límite de caracteres</mat-error>
+                <mat-error *ngIf="(identificacion.dirty || identificacion.touched) && identificacion.invalid && identificacion.errors.pattern">Identificación no válida</mat-error>
             </mat-form-field>
             <br>
             <mat-form-field class="fullWidth">
@@ -164,9 +158,8 @@
             </div>
         </form>
     </ng-template>
-
     <ng-template #templateActualizar let-data>
-        <h1 class="centro">Actualizar Información</h1>
+        <h1 class="centro">Actualizar Información Médico</h1>
         <form [formGroup]="updateMedicoForm" #formDirectiveUpdateMedico="ngForm" (ngSubmit)="submitUpdateMedico(data.idMedico, data.indexMedico)" autocomplete="off">
             <mat-form-field class="fullWidth">
                 <mat-label for="nombreUpdate" class="text-info titleInput">Nombre:</mat-label><br>
@@ -181,13 +174,13 @@
                         <mat-option [value]="tipoIdentidad">{{tipoIdentidad}}</mat-option>
                     </ng-container>
                 </mat-select>
-                <mat-error *ngIf="(tipoIdentificacionUpdate.dirty || tipoIdentificacionUpdate.touched) && tipoIdentificacionUpdate.invalid && tipoIdentificacionUpdate.errors.required">Selecciona el tipo de identificación</mat-error>
             </mat-form-field>
             <br>
             <mat-form-field class="fullWidth">
                 <mat-label for="identificacionUpdate" class="text-info titleInput">Identificación:</mat-label><br>
-                <input #inputIdentificacionUpdateMedico class="inputAdd" matInput type="text" formControlName="identificacionUpdate" (ngModelChange)="changesInputUpdateVerificacion('identificacionUpdate')" (click)="hideError('actualizar')" (focus)="hideError('actualizar'); inputIdentificacionUpdateMedico.select()">
+                <input #inputIdentificacionUpdateMedico class="inputAdd" matInput type="text" formControlName="identificacionUpdate" pattern="^[A-Za-z0-9][A-Za-z0-9-]*$" (ngModelChange)="changesInputUpdateVerificacion('identificacionUpdate')" (click)="hideError('actualizar')" (focus)="hideError('actualizar'); inputIdentificacionUpdateMedico.select()">
                 <mat-error *ngIf="(identificacionUpdate.dirty || identificacionUpdate.touched) && identificacionUpdate.invalid && identificacionUpdate.errors.maxlength">Se ha excedido el límite de caracteres</mat-error>
+                <mat-error *ngIf="(identificacionUpdate.dirty || identificacionUpdate.touched) && identificacionUpdate.invalid && identificacionUpdate.errors.pattern">Identificación no válida</mat-error>
             </mat-form-field>
             <br>
             <mat-form-field class="fullWidth">
@@ -248,7 +241,6 @@
             </div>
         </form>
     </ng-template>
-
     <ng-template #templateDelete let-data>
         <h3 class="centro">Deseas eliminar al médico {{data.medico.nombre}} con identificación {{data.medico.identificacion}} del sistema?</h3>
         <div #mensajeServidorDeleteMedico class="errorServidor"><br><br></div>
@@ -257,7 +249,6 @@
             <button mat-raised-button class="botonesFormDialogCancel" (click)="cerrarDialog('dialogBorrarMedico')">Cancelar</button>
         </div>
     </ng-template>
-
     <div class="centered">
         <div style="font-weight: bold;">Añadir Médico</div>
         <button mat-icon-button (click)="crearMedico(templateCrear)">
@@ -265,6 +256,6 @@
         </button>
         <br>
         <br>
-        <button mat-raised-button id="salirBoton" (click)="cerrarDialog(null)">Salir</button>
+        <button mat-raised-button id="salirBoton" (click)="cerrarDialog(null)">Atrás</button>
     </div>
 </div>

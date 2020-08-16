@@ -7,6 +7,7 @@ import { MedicoDTO } from 'src/app/dto/MedicoDTO';
   providedIn: 'root'
 })
 export class MedicosService {
+  
   private url:string;
 
   constructor(private http:HttpClient) { 

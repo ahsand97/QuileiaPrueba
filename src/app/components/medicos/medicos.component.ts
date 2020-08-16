@@ -60,7 +60,7 @@ export class MedicosComponent implements OnInit {
 
   //Formularios
   addMedicoForm:FormGroup;
-  updateMedicoForm:FormGroup;;
+  updateMedicoForm:FormGroup;
 
   constructor(private dialogRef:MatDialogRef<MedicosComponent>,
     @Inject(MAT_DIALOG_DATA) public data, private dialog:MatDialog,
@@ -70,6 +70,9 @@ export class MedicosComponent implements OnInit {
   { }
 
   ngOnInit(): void {
+    //Width y Height dialogs
+    this.heightDialog = window.innerHeight * 0.9;
+    this.witdhDialog = String(window.innerWidth * 0.5) + 'px';
     for(let i = 1; i < 12; i++){
       if(i < 10){
         this.horasDisponibles.push('0' + i.toString());
@@ -78,14 +81,10 @@ export class MedicosComponent implements OnInit {
         this.horasDisponibles.push(i.toString());
       }
     }
-
     //Tabla Médicos
     this.medicos = this.data.medicos;
+    this.medicos.sort(this.ordenarMedicos);
     this.dataSourceTablaMedicos.data = this.medicos;
-
-    //Width y Height dialogs
-    this.heightDialog = window.innerHeight * 0.9;
-    this.witdhDialog = String(window.innerWidth * 0.5) + 'px';
   }
 
   ordenarMedicos(a, b){
@@ -138,7 +137,7 @@ export class MedicosComponent implements OnInit {
       this.addMedicoForm = this.formBuilder.group({
         nombre: ['', [Validators.required, Validators.maxLength(255)]],
         tipoIdentificacion: ['', [Validators.required]],
-        identificacion: ['', [Validators.required, Validators.maxLength(255)]],
+        identificacion: ['', [Validators.required, Validators.maxLength(255), Validators.pattern('^[A-Za-z0-9][A-Za-z0-9-]*$')]],
         numeroTarjetaProfesional: ['', [Validators.required, Validators.pattern('^([0-9]+-)*[0-9]+$')]],
         anosExperiencia: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
         especialidad: ['', [Validators.required, Validators.maxLength(255)]],
@@ -151,7 +150,7 @@ export class MedicosComponent implements OnInit {
         this.dialogCrear = true;
         this.idDialogCrear = dialogRef.id;
       });
-      dialogRef.afterClosed().subscribe(result =>{
+      dialogRef.afterClosed().subscribe(() =>{
         this.dialogCrear = false;
         this.idDialogCrear = null;
         
@@ -246,7 +245,7 @@ export class MedicosComponent implements OnInit {
           nombreUpdate: [next.nombre, [Validators.required, Validators.maxLength(255)]],
           tipoIdentificacionUpdate: [next.tipoIdentificacion, [Validators.required]],
           identificacionUpdate: [next.identificacion, [Validators.required, Validators.maxLength(255)]],
-          numeroTarjetaProfesionalUpdate: [next.numeroTarjetaProfesional, [Validators.required, Validators.pattern('^([0-9]+-)*[0-9]+$')]],
+          numeroTarjetaProfesionalUpdate: [next.numeroTarjetaProfesional, [Validators.required, Validators.pattern('^[A-Za-z0-9][A-Za-z0-9-]*$')]],
           anosExperienciaUpdate: [next.anosExperiencia, [Validators.required, Validators.pattern('^[0-9]+$')]],
           especialidadUpdate: [next.especialidad, [Validators.required, Validators.maxLength(255)]],
           horaInicioAtencionUpdate: [horaInicioAtencion, [Validators.required]],
@@ -267,7 +266,7 @@ export class MedicosComponent implements OnInit {
           this.dialogUpdate = true;
           this.idDialogUpdate = dialogRef.id;
         });
-        dialogRef.afterClosed().subscribe(result =>{
+        dialogRef.afterClosed().subscribe(() => {
           this.dialogUpdate = false;
           this.idDialogUpdate = null;
 
@@ -284,7 +283,6 @@ export class MedicosComponent implements OnInit {
           this.deshabilitarBotonUpdateForm = false;
         });
       });
-
     }
   }
 
