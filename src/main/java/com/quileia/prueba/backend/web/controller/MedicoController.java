@@ -8,8 +8,10 @@ package com.quileia.prueba.backend.web.controller;
 import com.quileia.prueba.backend.service.MedicoService;
 import com.quileia.prueba.backend.web.dto.MedicoDTO;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -52,25 +55,57 @@ public class MedicoController {
         }
     }
     
-    @PostMapping()
-    public ResponseEntity<?> addMedico(@RequestBody MedicoDTO medicoDTO){
+    @GetMapping(params = "identificacion")
+    public ResponseEntity<?> getMedicoByIdentificacion(@RequestParam String identificacion){
         try{
-            MedicoDTO resp = medicoService.addMedico(medicoDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(resp);
-        }
-        catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
-    
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateMedico(@PathVariable("id") String id, @RequestBody MedicoDTO medicoDTO){
-        try{
-            MedicoDTO resp = medicoService.updateMedico(id, medicoDTO);
+            MedicoDTO resp = medicoService.getMedicoByIdentificacion(identificacion);
             return ResponseEntity.status(HttpStatus.OK).body(resp);
         }
         catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+    
+    @GetMapping("/{id}/horas")
+    public ResponseEntity<?> getHorasDisponibles(@PathVariable("id") String id){
+        try{
+            List<String> resp = medicoService.getHorasDisponibles(id);
+            return ResponseEntity.status(HttpStatus.OK).body(resp);
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+    
+    @PostMapping()
+    public ResponseEntity<?> addMedico(@Valid @RequestBody MedicoDTO medicoDTO, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Formulario con datos incorrectos.");
+        }
+        else{
+            try{
+                MedicoDTO resp = medicoService.addMedico(medicoDTO);
+                return ResponseEntity.status(HttpStatus.CREATED).body(resp);
+            }
+            catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            }
+        }
+    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateMedico(@PathVariable("id") String id, @Valid @RequestBody MedicoDTO medicoDTO, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Formulario con datos incorrectos.");
+        }
+        else{
+            try{
+                MedicoDTO resp = medicoService.updateMedico(id, medicoDTO);
+                return ResponseEntity.status(HttpStatus.OK).body(resp);
+            }
+            catch (Exception e){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            }
         }
     }
     

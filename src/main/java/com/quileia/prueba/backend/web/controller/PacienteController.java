@@ -8,8 +8,10 @@ package com.quileia.prueba.backend.web.controller;
 import com.quileia.prueba.backend.service.PacienteService;
 import com.quileia.prueba.backend.web.dto.PacienteDTO;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -52,25 +55,46 @@ public class PacienteController {
         }
     }
     
-    @PostMapping()
-    public ResponseEntity<?> addPaciente(@RequestBody PacienteDTO pacienteDTO){
+    @GetMapping(params = "identificacion")
+    public ResponseEntity<?> getPacienteByIdentificacion(@RequestParam String identificacion){
         try{
-            PacienteDTO resp = pacienteService.addPaciente(pacienteDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(resp);
-        }
-        catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
-    
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updatePaciente(@PathVariable("id") String id, @RequestBody PacienteDTO pacienteDTO){
-        try{
-            PacienteDTO resp = pacienteService.updatePaciente(id, pacienteDTO);
+            PacienteDTO resp = pacienteService.getPacienteByIdentificacion(identificacion);
             return ResponseEntity.status(HttpStatus.OK).body(resp);
         }
         catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+    
+    @PostMapping()
+    public ResponseEntity<?> addPaciente(@Valid @RequestBody PacienteDTO pacienteDTO, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Formulario con datos incorrectos.");
+        }
+        else{
+            try{
+                PacienteDTO resp = pacienteService.addPaciente(pacienteDTO);
+                return ResponseEntity.status(HttpStatus.CREATED).body(resp);
+            }
+            catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            }
+        }
+    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updatePaciente(@PathVariable("id") String id, @Valid @RequestBody PacienteDTO pacienteDTO, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Formulario con datos incorrectos.");
+        }
+        else{
+            try{
+                PacienteDTO resp = pacienteService.updatePaciente(id, pacienteDTO);
+                return ResponseEntity.status(HttpStatus.OK).body(resp);
+            }
+            catch (Exception e){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            }
         }
     }
     

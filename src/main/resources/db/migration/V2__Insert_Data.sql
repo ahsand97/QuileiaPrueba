@@ -117,3 +117,9 @@ g) Antecedentes familiares: su padre y una tía fueron diabéticos; su madre fue
 h) Inmunizaciones: las de la infancia.
 
 Revisión por sistemas: no ha tenido tos, disnea ni dolores precordiales. Habitualmente tiende a ser algo constipada.');
+
+
+INSERT INTO "citas"("hora", "medico_id", "paciente_id") VALUES
+('07:00 A.M', 1, 1),
+('10:00 A.M', 2, 2),
+('04:00 P.M', 3, 3);
