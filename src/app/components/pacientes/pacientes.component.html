@@ -65,7 +65,7 @@
         </div>
         <br>
         <div class="fullWidth centered">
-            <button mat-raised-button id="salirBoton" type="button" (click)="cerrarDialog('dialogDetallesPaciente')">Atrás</button>
+            <button mat-raised-button id="salirBoton" (click)="cerrarDialog('dialogDetallesPaciente')">Atrás</button>
         </div>
     </ng-template>
     <ng-template #templateCrear>
@@ -179,7 +179,7 @@
         </form>
     </ng-template>
     <ng-template #templateDelete let-data>
-        <h3 class="centro">Deseas eliminar al paciente {{data.paciente.nombre}} con identificación {{data.paciente.identificacion}} del sistema?</h3>
+        <h3 class="centro">Deseas eliminar al paciente "{{data.paciente.nombre}}" con identificación "{{data.paciente.identificacion}}" del sistema?</h3>
         <div #mensajeServidorDeletePaciente class="errorServidor"><br><br></div>
         <div class="centered">
             <button mat-raised-button class="botonesFormDialogOk" (click)="submitBorrarPaciente(data.paciente.id, data.indexPaciente)">Aceptar</button>

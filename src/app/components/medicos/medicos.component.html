@@ -64,7 +64,7 @@
             <br>
         </div>
         <div class="fullWidth centered">
-            <button mat-raised-button id="salirBoton" type="button" (click)="cerrarDialog('dialogDetallesMedico')">Atrás</button>
+            <button mat-raised-button id="salirBoton" (click)="cerrarDialog('dialogDetallesMedico')">Atrás</button>
         </div>
     </ng-template>
     <ng-template #templateCrear>
@@ -127,7 +127,7 @@
                     <mat-error *ngIf="(horaInicioAtencion.dirty || horaInicioAtencion.touched) && horaInicioAtencion.invalid && horaInicioAtencion.errors.required">Selecciona la hora</mat-error>
                 </mat-form-field>
                 <br>
-                <mat-radio-group [(ngModel)]="anteMeridiemInicio" [ngModelOptions]="{standalone: true}" [name]="anteMeridiemInicio" class="RadiobotonesHora" (click)="hideError('crear')" (focus)="hideError('crear')">
+                <mat-radio-group [(ngModel)]="anteMeridiemInicio" [ngModelOptions]="{standalone: true}" (ngModelChange)="changesMeridiemCrearMedico()" [name]="anteMeridiemInicio" class="RadiobotonesHora" (click)="hideError('crear')" (focus)="hideError('crear')">
                     <mat-radio-button value="1" style="font-weight: bold; padding-right: 10px;">A.M</mat-radio-button>
                     <mat-radio-button value="2" style="font-weight: bold; padding-left: 10px;">P.M</mat-radio-button>
                 </mat-radio-group>
@@ -144,7 +144,7 @@
                     <mat-error *ngIf="(horaFinAtencion.dirty || horaFinAtencion.touched) && horaFinAtencion.invalid && horaFinAtencion.errors.required">Selecciona la hora</mat-error>
                 </mat-form-field>
                 <br>
-                <mat-radio-group [(ngModel)]="anteMeridiemFin" [ngModelOptions]="{standalone: true}" [name]="anteMeridiemFin" class="RadiobotonesHora" (click)="hideError('crear')" (focus)="hideError('crear')">
+                <mat-radio-group [(ngModel)]="anteMeridiemFin" [ngModelOptions]="{standalone: true}" (ngModelChange)="changesMeridiemCrearMedico()" [name]="anteMeridiemFin" class="RadiobotonesHora" (click)="hideError('crear')" (focus)="hideError('crear')">
                     <mat-radio-button value="3" style="font-weight: bold; padding-right: 10px;">A.M</mat-radio-button>
                     <mat-radio-button value="4" style="font-weight: bold; padding-left: 10px;">P.M</mat-radio-button>
                 </mat-radio-group>
@@ -153,7 +153,7 @@
             <div #mensajeServidorAddMedico class="errorServidor"></div>
             <br>
             <div class="centered">
-                <button mat-raised-button class="botonesFormDialogOk" [disabled]="!addMedicoForm.valid">Guardar</button>
+                <button mat-raised-button class="botonesFormDialogOk" [disabled]="(!addMedicoForm.valid || deshabilitarBotonCrearMedico)">Guardar</button>
                 <button mat-raised-button class="botonesFormDialogCancel" type="button" (click)="cerrarDialog('dialogCrearMedico')">Cancelar</button>
             </div>
         </form>
@@ -242,7 +242,7 @@
         </form>
     </ng-template>
     <ng-template #templateDelete let-data>
-        <h3 class="centro">Deseas eliminar al médico {{data.medico.nombre}} con identificación {{data.medico.identificacion}} del sistema?</h3>
+        <h3 class="centro">Deseas eliminar al médico "{{data.medico.nombre}}" con identificación "{{data.medico.identificacion}}" del sistema?</h3>
         <div #mensajeServidorDeleteMedico class="errorServidor"><br><br></div>
         <div class="centered">
             <button mat-raised-button class="botonesFormDialogOk" (click)="submitBorrarMedico(data.medico.id, data.indexMedico)">Aceptar</button>

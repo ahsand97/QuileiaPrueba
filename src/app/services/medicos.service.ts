@@ -31,6 +31,14 @@ export class MedicosService {
     return this.http.get<MedicoDTO>(this.url + '/medicos/' + idMedico);
   }
 
+  getMedicoByIdentificacion(identificacionMedico){
+    return this.http.get<MedicoDTO>(this.url + '/medicos?identificacion=' + identificacionMedico);
+  }
+
+  getHorasDisponibles(idMedico){
+    return this.http.get<string[]>(this.url + '/medicos/' + idMedico + '/horas')
+  }
+
   updateMedico(medico:MedicoDTO){
     let header = new HttpHeaders({'Content-Type':'application/json'});
     return this.http.put<MedicoDTO>(this.url + '/medicos/' + medico.id, medico, {headers:header});

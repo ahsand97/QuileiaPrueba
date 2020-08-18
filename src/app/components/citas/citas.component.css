@@ -2,3 +2,141 @@ h1.centro{
     text-align: center;
     font-weight: bold;
 }
+
+h2.centro{
+    text-align: center;
+    font-weight: bold;
+}
+
+.centered{
+    text-align: center;
+}
+
+#salirBoton{
+    margin-left: 10px;
+    background-color: crimson;
+    color: white;
+}
+
+#salirBoton:hover{
+    margin-left: 10px;
+    background-color: white;
+    color: crimson;
+}
+
+.mat-header-cell {
+    flex-direction: column;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.mat-cell {
+    text-align: center;
+    justify-content: center;
+}
+
+.opcionbutton{
+    margin-left: 2.5px;
+    margin-right: 2.5px;
+    font-size: 12px;
+    text-align: center;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.detallebutton{
+    background-color: teal;
+    color: white;
+}
+
+.detallebutton:hover{
+    background-color: white;
+    color: teal;
+}
+
+.borrarbutton{
+    background-color: crimson;
+    color: white;
+}
+
+.borrarbutton:hover{
+    background-color: white;
+    color: crimson;
+}
+
+.fullWidth{
+    display: block;
+    margin: 0 auto;
+    width: 70%;
+}
+
+.errorServidor{
+    text-align: center;
+    font-size: 18px;
+    color: #ff4747;
+    font-weight: bold;
+    display: none;
+}
+
+.botonesFormDialogOk:enabled{
+    margin-right: 10px;
+    background-color: limegreen;
+    color: white;
+}
+
+.botonesFormDialogOk:enabled:hover{
+    margin-right: 10px;
+    background-color: white;
+    color: limegreen;
+}
+
+.botonesFormDialogOk:disabled{
+    margin-right: 10px;
+    background-color: gray;
+    color: white;
+}
+
+.botonesFormDialogCancel{
+    margin-left: 10px;
+    background-color: crimson;
+    color: white;
+}
+
+.botonesFormDialogCancel:enabled:hover{
+    margin-left: 10px;
+    background-color: white;
+    color: crimson;
+}
+
+.textAreaInput{
+    resize: none;
+    height: 100px;
+    font-size: 15px;
+}
+
+::ng-deep .snackBarCreate{
+    background-color: green;
+    color: white;
+}
+
+::ng-deep .snackBarDelete{
+    background-color: crimson;
+    color: white;
+}
+
+.titleInput{
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.inputAdd{
+    font-size: 15px;
+    height: 30px;
+}
+
+.titleInputHora{
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+}

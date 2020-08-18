@@ -5,6 +5,7 @@ import { PacientesComponent } from '../pacientes/pacientes.component';
 import { CitasComponent } from '../citas/citas.component';
 import { MedicosService } from 'src/app/services/medicos.service';
 import { PacientesService } from 'src/app/services/pacientes.service';
+import { CitasService } from 'src/app/services/citas.service';
 
 @Component({
   selector: 'app-main',
@@ -19,7 +20,10 @@ export class MainComponent implements OnInit {
   heightDialog:number;
   witdhDialog:string;
 
-  constructor(private dialog:MatDialog, private medicosService:MedicosService, private pacientesService:PacientesService) { }
+  constructor(private dialog:MatDialog,
+    private medicosService:MedicosService,
+    private pacientesService:PacientesService,
+    private citasService:CitasService) { }
 
   @HostListener('window:resize', ['$event'])
   getScreenSize() {
@@ -44,12 +48,11 @@ export class MainComponent implements OnInit {
       dialogRef.afterOpened().subscribe(() => {
         this.dialogMedicosAbierto = true;
       });
-      dialogRef.afterClosed().subscribe(result =>{
+      dialogRef.afterClosed().subscribe(() =>{
         this.dialogMedicosAbierto = false;
       });
     }
   }
-
 
   abrirDialogPacientes(){
     if(this.dialogPacientesAbierto == false){
@@ -67,7 +70,7 @@ export class MainComponent implements OnInit {
       dialogRef.afterOpened().subscribe(() => {
         this.dialogPacientesAbierto = true;
       });
-      dialogRef.afterClosed().subscribe(result =>{
+      dialogRef.afterClosed().subscribe(() =>{
         this.dialogPacientesAbierto = false;
       });
     }
@@ -75,11 +78,17 @@ export class MainComponent implements OnInit {
 
   abrirDialogCitas(){
     if(this.dialogCitasAbierto == false){
-      let dialogRef = this.dialog.open(CitasComponent, {width : this.witdhDialog, maxHeight: this.heightDialog, autoFocus: false});
+      let citas = [];
+      this.citasService.getCitas().subscribe(next => {
+        next.forEach(e =>{
+          citas.push(e);
+        })
+      });
+      let dialogRef = this.dialog.open(CitasComponent, {data: {'citas': citas},width : this.witdhDialog, maxHeight: this.heightDialog, autoFocus: false});
       dialogRef.afterOpened().subscribe(() => {
         this.dialogCitasAbierto = true;
       });
-      dialogRef.afterClosed().subscribe(result =>{
+      dialogRef.afterClosed().subscribe(() =>{
         this.dialogCitasAbierto = false;
       });
     }

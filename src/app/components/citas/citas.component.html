@@ -1,3 +1,149 @@
 <div>
-    <h1 class="centro">Citas</h1>
+    <h1 class="centro">Citas para el día {{dateToday | date: 'dd/MM/yyyy'}}</h1>
+    <mat-table *ngIf="citas.length > 0" [dataSource]="dataSourceTablaCitas" class="mat-elevation-z8">
+        <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef> id </mat-header-cell>
+            <mat-cell *matCellDef="let cita"> {{cita.id}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Médico">
+            <mat-header-cell *matHeaderCellDef> Médico </mat-header-cell>
+            <mat-cell *matCellDef="let cita"> {{cita.medico.nombre}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Paciente">
+            <mat-header-cell *matHeaderCellDef> Paciente </mat-header-cell>
+            <mat-cell *matCellDef="let cita"> {{cita.paciente.nombre}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Hora">
+            <mat-header-cell *matHeaderCellDef> Hora </mat-header-cell>
+            <mat-cell *matCellDef="let cita"> {{cita.hora}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Opciones">
+            <mat-header-cell *matHeaderCellDef> Opciones </mat-header-cell>
+            <mat-cell *matCellDef="let cita; let i = index">
+                <div>
+                    <button mat-raised-button class="opcionbutton detallebutton" (click)="getDetallesCita(templateDetalles, cita.id)">Detalles</button>
+                    <button mat-raised-button class="opcionbutton borrarbutton" (click)="borrarCita(templateDelete, cita, i)">Cancelar</button>
+                </div>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <br>
+    <br>
+    <ng-template #templateDetalles let-data>
+        <h1 class="centro">Información Cita</h1>
+        <div class="fullWidth">
+            <h3 style="display: inline-block; font-weight: bold;">Id:&nbsp;</h3>
+            <h3 style="display: inline-block;">{{data.cita.id}}</h3>
+            <br>
+            <h3 style="display: inline-block; font-weight: bold;">Hora:&nbsp;</h3>
+            <h3 style="display: inline-block;">{{data.cita.hora}}</h3>
+        </div>
+        <h2 class="centro">Médico</h2>
+        <div class="fullWidth">
+            <h3 style="display: inline-block; font-weight: bold;">Nombre:&nbsp;</h3>
+            <h3 style="display: inline-block;">{{data.cita.medico.nombre}}</h3>
+            <br>
+            <h3 style="display: inline-block; font-weight: bold;">Identificación:&nbsp;</h3>
+            <h3 style="display: inline-block;">{{data.cita.medico.identificacion}}</h3>
+            <br>
+            <h3 style="display: inline-block; font-weight: bold;">Número Tarjeta Profesional:&nbsp;</h3>
+            <h3 style="display: inline-block;">{{data.cita.medico.numeroTarjetaProfesional}}</h3>
+        </div>
+        <h2 class="centro">Paciente</h2>
+        <div class="fullWidth">
+            <h3 style="display: inline-block; font-weight: bold;">Nombre:&nbsp;</h3>
+            <h3 style="display: inline-block;">{{data.cita.paciente.nombre}}</h3>
+            <br>
+            <h3 style="display: inline-block; font-weight: bold;">Identificación:&nbsp;</h3>
+            <h3 style="display: inline-block;">{{data.cita.paciente.identificacion}}</h3>
+        </div>
+        <div class="fullWidth centered">
+            <button mat-raised-button id="salirBoton" (click)="cerrarDialog('dialogDetallesCita')">Atrás</button>
+        </div>
+    </ng-template>
+    <ng-template #templateCrear>
+        <h1 class="centro">Añadir Cita</h1>
+        <form [formGroup]="addCitaForm" #formDirectiveAddCita="ngForm" (ngSubmit)="submitCrearCita(formDirectiveAddCita)" autocomplete="off">
+            <div class="centered">
+                <mat-form-field class="fullWidth" style="display: inline-block!important; padding-right: 10px;">
+                    <mat-label for="identificacionPaciente" class="text-info titleInput">Identificación del Paciente:</mat-label><br>
+                    <input class="inputAdd" matInput type="text" formControlName="identificacionPaciente" (click)="hideError('crear')" (focus)="hideError('crear')">
+                    <mat-error *ngIf="(identificacionPaciente.dirty || identificacionPaciente.touched) && identificacionPaciente.invalid && identificacionPaciente.errors.required">Escribe la identificacion del paciente</mat-error>
+                    <mat-error *ngIf="(identificacionPaciente.dirty || identificacionPaciente.touched) && identificacionPaciente.invalid && identificacionPaciente.errors.maxlength">Se ha excedido el límite de caracteres</mat-error>
+                    <mat-error *ngIf="(identificacionPaciente.dirty || identificacionPaciente.touched) && identificacionPaciente.invalid && identificacionPaciente.errors.pattern">Identificación no válida</mat-error>
+                </mat-form-field>
+                <button mat-raised-button style="margin-right: 0px!important; vertical-align:bottom; margin-bottom: 16.125px;" class="botonesFormDialogOk" type="button" (click)="submitCrearCitaBuscarPaciente()" [disabled]="(identificacionPaciente.invalid || disableButtonBuscarPacienteRelacionado)">Buscar</button>
+            </div>
+            <h3 #mensajeServidorBuscarPaciente class="errorServidor" style="font-size: 16px!important;"></h3>
+            <ng-container *ngIf="pacienteRelacionado">
+                <h2 class="centro">Paciente</h2>
+                <div class="fullWidth">
+                    <h3 style="display: inline-block; font-weight: bold;">Nombre:&nbsp;</h3>
+                    <h3 style="display: inline-block;">{{pacienteRelacionado.nombre}}</h3>
+                    <br>
+                    <h3 style="display: inline-block; font-weight: bold;">Identificación:&nbsp;</h3>
+                    <h3 style="display: inline-block;">{{pacienteRelacionado.identificacion}}</h3>
+                </div>
+            </ng-container>
+            <div class="centered">
+                <mat-form-field class="fullWidth" style="display: inline-block!important; padding-right: 10px;">
+                    <mat-label for="identificacionMedico" class="text-info titleInput">Identificación del Médico:</mat-label><br>
+                    <input class="inputAdd" matInput type="text" formControlName="identificacionMedico" (click)="hideError('crear')" (focus)="hideError('crear')">
+                    <mat-error *ngIf="(identificacionMedico.dirty || identificacionMedico.touched) && identificacionMedico.invalid && identificacionMedico.errors.required">Escribe la identificacion del médico</mat-error>
+                    <mat-error *ngIf="(identificacionMedico.dirty || identificacionMedico.touched) && identificacionMedico.invalid && identificacionMedico.errors.maxlength">Se ha excedido el límite de caracteres</mat-error>
+                    <mat-error *ngIf="(identificacionMedico.dirty || identificacionMedico.touched) && identificacionMedico.invalid && identificacionMedico.errors.pattern">Identificación no válida</mat-error>
+                </mat-form-field>
+                <button mat-raised-button style="margin-right: 0px!important; vertical-align:bottom; margin-bottom: 16.125px;" class="botonesFormDialogOk" type="button" (click)="submitCrearCitaBuscarMedico()" [disabled]="(identificacionMedico.invalid || disableButtonBuscarMedicoRelacionado)">Buscar</button>
+            </div>
+            <h3 #mensajeServidorBuscarMedico class="errorServidor" style="font-size: 16px!important;"></h3>
+            <ng-container *ngIf="medicoRelacionado">
+                <h2 class="centro">Médico</h2>
+                <div class="fullWidth">
+                    <h3 style="display: inline-block; font-weight: bold;">Nombre:&nbsp;</h3>
+                    <h3 style="display: inline-block;">{{medicoRelacionado.nombre}}</h3>
+                    <br>
+                    <h3 style="display: inline-block; font-weight: bold;">Identificación:&nbsp;</h3>
+                    <h3 style="display: inline-block;">{{medicoRelacionado.identificacion}}</h3>
+                </div>
+                <ng-container *ngIf="horasdisponiblesMedicoRelacionado.length > 0">
+                    <h2 class="centro">Horas Disponibles</h2>
+                    <mat-form-field class="fullWidth">
+                        <mat-label for="hora" class="text-info titleInput">Hora:</mat-label><br>
+                        <mat-select formControlName="hora" (click)="hideError('crear')" (focus)="hideError('crea')">
+                            <ng-container *ngFor="let horaDisponible of horasdisponiblesMedicoRelacionado">
+                                <mat-option [value]="horaDisponible">{{horaDisponible}}</mat-option>
+                            </ng-container>
+                        </mat-select>
+                        <mat-error *ngIf="(hora.dirty || hora.touched) && hora.invalid && hora.errors.required">Selecciona la hora para la cita</mat-error>
+                    </mat-form-field>
+                    <br>
+                </ng-container>
+            </ng-container>
+            <div #mensajeServidorAddCita class="errorServidor"></div>
+            <br>
+            <div class="centered">
+                <button mat-raised-button class="botonesFormDialogOk" [disabled]="(!addCitaForm.valid || !medicoRelacionado || !pacienteRelacionado)">Asignar</button>
+                <button mat-raised-button class="botonesFormDialogCancel" type="button" (click)="cerrarDialog('dialogCrearCita')">Cancelar</button>
+            </div>
+        </form>
+    </ng-template>
+    <ng-template #templateDelete let-data>
+        <h3 class="centro">Deseas cancelar la cita asignada al paciente "{{data.cita.paciente.nombre}}" con el médico "{{data.cita.medico.nombre}}" a la hora: {{data.cita.hora}} ?</h3>
+        <div #mensajeServidorDeleteCita class="errorServidor"><br><br></div>
+        <div class="centered">
+            <button mat-raised-button class="botonesFormDialogOk" (click)="submitBorrarCita(data.cita.id, data.indexCita)">Aceptar</button>
+            <button mat-raised-button class="botonesFormDialogCancel" (click)="cerrarDialog('dialogBorrarCita')">Cancelar</button>
+        </div>
+    </ng-template>
+    <div class="centered">
+        <div style="font-weight: bold;">Añadir Cita</div>
+        <button mat-icon-button (click)="crearCita(templateCrear)">
+            <img src="../../../assets/add.svg" style="width: 42px; height: 42px;">
+        </button>
+        <br>
+        <br>
+        <button mat-raised-button id="salirBoton" (click)="cerrarDialog(null)">Atrás</button>
+    </div>
 </div>

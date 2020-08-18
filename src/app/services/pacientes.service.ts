@@ -31,6 +31,10 @@ export class PacientesService {
     return this.http.get<PacienteDTO>(this.url + '/pacientes/' + idPaciente);
   }
 
+  getPacienteByIdentificacion(identificacionPaciente){
+    return this.http.get<PacienteDTO>(this.url + '/pacientes?identificacion=' + identificacionPaciente);
+  }
+
   updatePaciente(paciente:PacienteDTO){
     let header = new HttpHeaders({'Content-Type':'application/json'});
     return this.http.put<PacienteDTO>(this.url + '/pacientes/' + paciente.id, paciente, {headers:header});

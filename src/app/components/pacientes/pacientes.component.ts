@@ -64,7 +64,8 @@ export class PacientesComponent implements OnInit {
   updatePacienteForm:FormGroup;
 
   constructor(private dialogRef:MatDialogRef<PacientesComponent>,
-    @Inject(MAT_DIALOG_DATA) public data, private dialog:MatDialog,
+    @Inject(MAT_DIALOG_DATA) public data,
+    private dialog:MatDialog,
     private pacientesService:PacientesService,
     private formBuilder:FormBuilder,
     private _matSnackBar:MatSnackBar,
@@ -118,7 +119,7 @@ export class PacientesComponent implements OnInit {
           this.dialogDetalles = true;
           this.idDialogDetalles = dialogRef.id;
         });
-        dialogRef.afterClosed().subscribe(result =>{
+        dialogRef.afterClosed().subscribe(() => {
           this.dialogDetalles = false;
           this.idDialogDetalles = null;
         });
@@ -290,12 +291,11 @@ export class PacientesComponent implements OnInit {
         this.dialogDelete = true;
         this.idDialogDelete = dialogRef.id;
       });
-      dialogRef.afterClosed().subscribe(result => {
+      dialogRef.afterClosed().subscribe(() => {
         this.dialogDelete = false;
         this.idDialogDelete = null;
 
         this.hideError('borrar');
-        this.mensajeServidorDeletePaciente.nativeElement.style.color = '#ff4747';
       });
     }
   }
@@ -310,7 +310,6 @@ export class PacientesComponent implements OnInit {
     }, error => {
       this.mensajeServidorDeletePaciente.nativeElement.innerHTML = error.error;
       this.mensajeServidorDeletePaciente.nativeElement.style.display = 'block';
-      this.mensajeServidorDeletePaciente.nativeElement.style.color = '#ff4747';
     });
   }
   //-----------------------------------------------------------------------------------
@@ -325,6 +324,7 @@ export class PacientesComponent implements OnInit {
         this.mensajeServidorUpdatePaciente.nativeElement.style.display = 'none';
         break;
       case 'borrar':
+        this.mensajeServidorDeletePaciente.nativeElement.style.display = 'none';
         break;
     }
   }

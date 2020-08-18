@@ -46,6 +46,7 @@ export class MedicosComponent implements OnInit {
   @ViewChild('mensajeServidorAddMedico') mensajeServidorAddMedico:ElementRef;
   dialogCrear:boolean = false;
   idDialogCrear:string = null;
+  deshabilitarBotonCrearMedico:boolean = false;
 
   //Width y heihght de todos los MatDialogs
   heightDialog:number;
@@ -63,7 +64,8 @@ export class MedicosComponent implements OnInit {
   updateMedicoForm:FormGroup;
 
   constructor(private dialogRef:MatDialogRef<MedicosComponent>,
-    @Inject(MAT_DIALOG_DATA) public data, private dialog:MatDialog,
+    @Inject(MAT_DIALOG_DATA) public data,
+    private dialog:MatDialog,
     private medicosService:MedicosService,
     private formBuilder:FormBuilder,
     private _matSnackBar:MatSnackBar)
@@ -121,7 +123,7 @@ export class MedicosComponent implements OnInit {
           this.dialogDetalles = true;
           this.idDialogDetalles = dialogRef.id;
         });
-        dialogRef.afterClosed().subscribe(result =>{
+        dialogRef.afterClosed().subscribe(() => {
           this.dialogDetalles = false;
           this.idDialogDetalles = null;
         });
@@ -149,6 +151,13 @@ export class MedicosComponent implements OnInit {
       dialogRef.afterOpened().subscribe(() => {
         this.dialogCrear = true;
         this.idDialogCrear = dialogRef.id;
+
+        this.horaInicioAtencion.valueChanges.subscribe(() => {
+          this.changesMeridiemCrearMedico();
+        });
+        this.horaFinAtencion.valueChanges.subscribe(() => {
+          this.changesMeridiemCrearMedico();
+        });
       });
       dialogRef.afterClosed().subscribe(() =>{
         this.dialogCrear = false;
@@ -161,6 +170,7 @@ export class MedicosComponent implements OnInit {
         this.anteMeridiemFin = '3';
         this.hideError('crear');
         this.mensajeServidorAddMedico.nativeElement.style.color = '#ff4747';
+        this.deshabilitarBotonCrearMedico = false;
       });
     }
   }
@@ -215,6 +225,15 @@ export class MedicosComponent implements OnInit {
       this.addMedicoForm.reset();
     });
   }
+
+  changesMeridiemCrearMedico(){
+    if((this.horaInicioAtencion.value == this.horaFinAtencion.value) && (((this.anteMeridiemInicio == '1') && (this.anteMeridiemFin == '3')) || ((this.anteMeridiemInicio == '2') && (this.anteMeridiemFin == '4')))){
+      this.deshabilitarBotonCrearMedico = true;
+    }
+    else{
+      this.deshabilitarBotonCrearMedico = false;
+    }
+  }
   //-----------------------------------------------------------------------------------
 
   //MatDialog Update Médico
@@ -256,6 +275,9 @@ export class MedicosComponent implements OnInit {
         this.updateMedicoForm.valueChanges.subscribe(() =>{
           if((_.isEqual(this.updateMedicoForm.value, this.estadoInicialUpdateMedicoForm) == true) && (this.anteMeridiemInicio == this.estadoInicialAnteMeridiemInicio) && (this.anteMeridiemFin == this.estadoInicialAnteMeridiemFinal)){
               this.deshabilitarBotonUpdateForm = true;
+          }
+          else if((this.horaInicioAtencionUpdate.value == this.horaFinAtencionUpdate.value) && (((this.anteMeridiemInicio == '1') && (this.anteMeridiemFin == '3')) || ((this.anteMeridiemInicio == '2') && (this.anteMeridiemFin == '4')))){
+            this.deshabilitarBotonUpdateForm = true;
           }
           else{
             this.deshabilitarBotonUpdateForm = false;
@@ -321,6 +343,9 @@ export class MedicosComponent implements OnInit {
       case 'anteMeridiemInicio':
       case 'anteMeridiemFin':
         if((_.isEqual(this.updateMedicoForm.value, this.estadoInicialUpdateMedicoForm) == true) && (this.anteMeridiemInicio == this.estadoInicialAnteMeridiemInicio) && (this.anteMeridiemFin == this.estadoInicialAnteMeridiemFinal)){
+          this.deshabilitarBotonUpdateForm = true;
+        }
+        else if((this.horaInicioAtencionUpdate.value == this.horaFinAtencionUpdate.value) && (((this.anteMeridiemInicio == '1') && (this.anteMeridiemFin == '3')) || ((this.anteMeridiemInicio == '2') && (this.anteMeridiemFin == '4')))){
           this.deshabilitarBotonUpdateForm = true;
         }
         else{
@@ -393,12 +418,11 @@ export class MedicosComponent implements OnInit {
         this.dialogDelete = true;
         this.idDialogDelete = dialogRef.id;
       });
-      dialogRef.afterClosed().subscribe(result => {
+      dialogRef.afterClosed().subscribe(() => {
         this.dialogDelete = false;
         this.idDialogDelete = null;
 
         this.hideError('borrar');
-        this.mensajeServidorDeleteMedico.nativeElement.style.color = '#ff4747';
       });
     }
   }
@@ -413,7 +437,6 @@ export class MedicosComponent implements OnInit {
     }, error => {
       this.mensajeServidorDeleteMedico.nativeElement.innerHTML = error.error;
       this.mensajeServidorDeleteMedico.nativeElement.style.display = 'block';
-      this.mensajeServidorDeleteMedico.nativeElement.style.color = '#ff4747';
     });
   }
   //-----------------------------------------------------------------------------------
