@@ -8,6 +8,7 @@ package com.quileia.prueba.backend.data.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -87,4 +88,72 @@ public class Medico implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="medico", orphanRemoval=true)
     @Valid
     List<Cita> citas = new ArrayList<>();
+    
+    public List<String> getHorasDisponibles(){
+        List<String> horasDisponiblesAM = new ArrayList<>();
+        horasDisponiblesAM.add("12:00 A.M");
+        for(int i = 1; i < 12; i++){
+            String hora = String.valueOf(i);
+            if(i < 10){
+                hora = '0'+ hora;
+            }
+            hora = hora + ":00 A.M";
+            horasDisponiblesAM.add(hora);
+        }
+        List<String> horasDisponiblesPM = new ArrayList<>();
+        horasDisponiblesPM.add("12:00 P.M");
+        for(int i = 1; i < 12; i++){
+            String hora = String.valueOf(i);
+            if(i < 10){
+                hora = '0'+ hora;
+            }
+            hora = hora + ":00 P.M";
+            horasDisponiblesPM.add(hora);
+        }
+        List<String> horasDisponiblesResp = new ArrayList<>();
+        String horaInicioAtencionSubstr = this.horaInicioAtencion.substring(0, 2);
+        String horaFinAtencionSubstr = this.horaFinAtencion.substring(0, 2);
+        String meridiemInicio = this.horaInicioAtencion.substring(this.horaInicioAtencion.length() - 3);
+        String meridiemFinal = this.horaFinAtencion.substring(this.horaFinAtencion.length() - 3);
+        if(meridiemInicio.equals(meridiemFinal)){
+            if("A.M".equals(meridiemInicio)){
+                for(int i = Integer.valueOf(horaInicioAtencionSubstr); i < Integer.valueOf(horaFinAtencionSubstr); i++){
+                    horasDisponiblesResp.add(horasDisponiblesAM.get(i));
+                }
+            }
+            else if("P.M".equals(meridiemInicio)){
+                for(int i = Integer.valueOf(horaInicioAtencionSubstr); i < Integer.valueOf(horaFinAtencionSubstr); i++){
+                    horasDisponiblesResp.add(horasDisponiblesPM.get(i));
+                }
+            }
+        }
+        else{
+            if("A.M".equals(meridiemInicio)){
+                for(int i = Integer.valueOf(horaInicioAtencionSubstr); i < horasDisponiblesAM.size(); i++){
+                    horasDisponiblesResp.add(horasDisponiblesAM.get(i));
+                }
+                for(int i = 0; i < Integer.valueOf(horaFinAtencionSubstr); i++){
+                    horasDisponiblesResp.add(horasDisponiblesPM.get(i));
+                }
+            }
+            else if("P.M".equals(meridiemInicio)){
+                for(int i = 0; i < Integer.valueOf(horaFinAtencionSubstr); i++){
+                    horasDisponiblesResp.add(horasDisponiblesAM.get(i));
+                }
+                for(int i = Integer.valueOf(horaInicioAtencionSubstr); i < horasDisponiblesPM.size(); i++){
+                    horasDisponiblesResp.add(horasDisponiblesPM.get(i));
+                }
+            }
+        }
+        Iterator<Cita> citas = this.citas.iterator();
+        while(citas.hasNext()){
+            Cita cita = citas.next();
+            for(int i = 0; i < horasDisponiblesResp.size(); i++){
+                if(cita.getHora().equals(horasDisponiblesResp.get(i))){
+                    horasDisponiblesResp.remove(i);
+                }
+            }
+        }
+        return horasDisponiblesResp;
+    }
 }

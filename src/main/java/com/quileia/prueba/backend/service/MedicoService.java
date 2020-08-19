@@ -5,7 +5,6 @@
  */
 package com.quileia.prueba.backend.service;
 
-import com.quileia.prueba.backend.data.entity.Cita;
 import com.quileia.prueba.backend.data.entity.Medico;
 import com.quileia.prueba.backend.data.repository.MedicoRepository;
 import com.quileia.prueba.backend.service.mapper.MedicoMapper;
@@ -70,71 +69,7 @@ public class MedicoService {
             throw new Exception("Médico no encontrado en el sistema.");
         }
         else{
-            List<String> horasDisponiblesAM = new ArrayList<>();
-            horasDisponiblesAM.add("12:00 A.M");
-            for(int i = 1; i < 12; i++){
-                String hora = String.valueOf(i);
-                if(i < 10){
-                    hora = '0'+ hora;
-                }
-                hora = hora + ":00 A.M";
-                horasDisponiblesAM.add(hora);
-            }
-            List<String> horasDisponiblesPM = new ArrayList<>();
-            horasDisponiblesPM.add("12:00 P.M");
-            for(int i = 1; i < 12; i++){
-                String hora = String.valueOf(i);
-                if(i < 10){
-                    hora = '0'+ hora;
-                }
-                hora = hora + ":00 P.M";
-                horasDisponiblesPM.add(hora);
-            }
-            List<String> horasDisponiblesResp = new ArrayList<>();
-            String horaInicioAtencion = medico.get().getHoraInicioAtencion().substring(0, 2);
-            String horaFinAtencion = medico.get().getHoraFinAtencion().substring(0, 2);
-            String meridiemInicio = medico.get().getHoraInicioAtencion().substring(medico.get().getHoraInicioAtencion().length() - 3);
-            String meridiemFinal = medico.get().getHoraFinAtencion().substring(medico.get().getHoraInicioAtencion().length() - 3);
-            if(meridiemInicio.equals(meridiemFinal)){
-                if("A.M".equals(meridiemInicio)){
-                    for(int i = Integer.valueOf(horaInicioAtencion); i < Integer.valueOf(horaFinAtencion); i++){
-                        horasDisponiblesResp.add(horasDisponiblesAM.get(i));
-                    }
-                }
-                else if("P.M".equals(meridiemInicio)){
-                    for(int i = Integer.valueOf(horaInicioAtencion); i < Integer.valueOf(horaFinAtencion); i++){
-                        horasDisponiblesResp.add(horasDisponiblesPM.get(i));
-                    }
-                }
-            }
-            else{
-                if("A.M".equals(meridiemInicio)){
-                    for(int i = Integer.valueOf(horaInicioAtencion); i < horasDisponiblesAM.size(); i++){
-                        horasDisponiblesResp.add(horasDisponiblesAM.get(i));
-                    }
-                    for(int i = 0; i < Integer.valueOf(horaFinAtencion); i++){
-                        horasDisponiblesResp.add(horasDisponiblesPM.get(i));
-                    }
-                }
-                else if("P.M".equals(meridiemInicio)){
-                    for(int i = 0; i < Integer.valueOf(horaFinAtencion); i++){
-                        horasDisponiblesResp.add(horasDisponiblesAM.get(i));
-                    }
-                    for(int i = Integer.valueOf(horaInicioAtencion); i < horasDisponiblesPM.size(); i++){
-                        horasDisponiblesResp.add(horasDisponiblesPM.get(i));
-                    }
-                }
-            }
-            Iterator<Cita> citas = medico.get().getCitas().iterator();
-            while(citas.hasNext()){
-                Cita cita = citas.next();
-                for(int i = 0; i < horasDisponiblesResp.size(); i++){
-                    if(cita.getHora().equals(horasDisponiblesResp.get(i))){
-                        horasDisponiblesResp.remove(i);
-                    }
-                }
-            }
-            return horasDisponiblesResp;
+            return medico.get().getHorasDisponibles();
         }
     }
     

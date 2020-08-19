@@ -46,9 +46,6 @@ public class CitaService {
     @Autowired
     private final CitaMapper citaMapper;
     
-    @Autowired
-    private final MedicoService medicoService;
-    
     public List<CitaDTO> getCitas(){
         Iterator<Cita> citas = citaRepository.findAll().iterator();
         List<CitaDTO> resp = new ArrayList<>();
@@ -106,7 +103,7 @@ public class CitaService {
         }
         else{
             int i = 0;
-            List<String> horasDisponiblesMedicoRelated = medicoService.getHorasDisponibles(String.valueOf(medicoRelated.get().getId()));
+            List<String> horasDisponiblesMedicoRelated = medicoRelated.get().getHorasDisponibles();
             for (String s : horasDisponiblesMedicoRelated) {
                 if(s.equals(citaDTO.getHora())){
                     i = i+1;
